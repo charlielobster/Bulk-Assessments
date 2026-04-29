@@ -102,7 +102,6 @@ namespace BulkAssessments
                     //  Run the report assessment three times
                     for (int i = 1; i < 3; i++)
                     {
-
                         var reportFileBytes = await File.ReadAllBytesAsync(labReport);
                         var assessmentResponse = await client.Models.GenerateContentAsync(
                             model: GEMINI_MODEL,
