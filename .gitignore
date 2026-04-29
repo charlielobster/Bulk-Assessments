@@ -364,3 +364,4 @@ FodyWeavers.xsd
 
 # ignore appsettings.json changes
 **/appsettings.json
+/Bulk Assessments/appsettings.json
