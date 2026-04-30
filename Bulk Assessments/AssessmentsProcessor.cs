@@ -34,8 +34,6 @@ namespace BulkAssessments
             //      Rubric is formatted using the convention: "Lab x Rubrics.pdf"
             //      (e.g., "Lab 5 Rubrics.pdf")
             //  For each lab,
-            //      Verification Prompt
-            //          
             //      Student Reports Folder
             //  Student reports use the convention:
             //      "(2 or 3 letters upper case) Lab x.pdf"
