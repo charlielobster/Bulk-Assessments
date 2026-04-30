@@ -180,6 +180,9 @@ namespace BulkAssessments
                             var worksheet = workbook.Worksheets.Add("Run " + i);
                             ConvertToWorksheet(jsonResponse, worksheet);
                         }
+
+                        // Sleep for a minute to keep TPM down
+                        Thread.Sleep(60000);
                     }
 
                     // Delete the report from gemini's cloud
@@ -188,10 +191,16 @@ namespace BulkAssessments
                     // Copy the workbook into the Lab scores folder
                     workbook.SaveAs(scoresParentPath + "\\" + labPrefix + "\\" +
                         scoresFileName.Substring(0, scoresFileName.IndexOf(".")) + " Scores.xlsx");
+
+                    // Sleep for 3 minutes between students
+                    Thread.Sleep(180000);
                 }
 
                 // No more use for Rubric cloud file, so delete it.
                 await client.Files.DeleteAsync(geminiRubricName);
+
+                // Take a breather between Rubrics
+                Thread.Sleep(300000);
             }
         }
 
