@@ -37,7 +37,7 @@ namespace BulkAssessments
                 .AddJsonFile("appsettings.json")
                 .Build();
 
-            Dictionary<string, string> labPrompts = new Dictionary<string, string>();
+            var labPrompts = new Dictionary<string, string>();
 
             if (config != null)
             {
@@ -61,10 +61,11 @@ namespace BulkAssessments
 
             // Algorithm:
             // For each of the Lab Rubrics in the Rubrics directory
-            var labRubrics = Directory.EnumerateDirectories(rubricsPath);
+            var labRubrics = Directory.GetFiles(rubricsPath);
             foreach (var labRubricFile in labRubrics)
             {
-                var labPrefix = labRubricFile.Substring(0, 5);
+                var labPrefix = Path.GetFileName(labRubricFile);
+                labPrefix = labPrefix.Substring(0, 5);
                 var labPrompt = labPrompts[labPrefix];
 
                 var rubricFileBytes = await File.ReadAllBytesAsync(labRubricFile);
@@ -92,7 +93,7 @@ namespace BulkAssessments
                 );
 
                 // get the Reports Folder for the Lab
-                var labReports = Directory.EnumerateDirectories(reportsParentPath + "\\" + labPrefix);
+                var labReports = Directory.GetFiles(reportsParentPath + "\\" + labPrefix);
 
                 //  For each student report for that Lab's Reports Folder,
                 foreach (var labReport in labReports)
@@ -146,7 +147,7 @@ namespace BulkAssessments
                     }
 
                     // Copy the workbook into the Lab scores folder
-                    workbook.SaveAs(scoresParentPath + labPrefix + "\\" + labReport + " Scores.xlsx");
+                    workbook.SaveAs(scoresParentPath + "\\" + labPrefix + "\\" + labReport + " Scores.xlsx");
                 }
             }
         }
