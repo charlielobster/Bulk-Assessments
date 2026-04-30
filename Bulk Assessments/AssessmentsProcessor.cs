@@ -80,10 +80,7 @@ namespace BulkAssessments
                 }
                 catch (ClientError e) when (e.Status == "NOT_FOUND")
                 {
-                    Console.WriteLine("File does not exist or has already expired.");
-
                     // create a new version of the file in gemini's cloud
-                    var rubricFileBytes = await File.ReadAllBytesAsync(labRubricFile);
                     var uploadedRubricFile = await client.Files.UploadAsync(
                         labRubricFile,
                         new UploadFileConfig { Name = geminiRubricName, MimeType = "application/pdf" }
