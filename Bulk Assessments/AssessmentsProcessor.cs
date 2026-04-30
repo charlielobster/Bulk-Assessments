@@ -92,6 +92,8 @@ namespace BulkAssessments
                     ]
                 );
 
+                // todo: check the verifyResponse for matching grand totals
+
                 // get the Reports Folder for the Lab
                 var labReports = Directory.GetFiles(reportsParentPath + "\\" + labPrefix);
 
@@ -99,6 +101,7 @@ namespace BulkAssessments
                 foreach (var labReport in labReports)
                 {
                     using var workbook = new XLWorkbook(workbookTemplateFullPath);
+                    var scoresFileName = Path.GetFileName(labReport);
                     
                     //  run the report assessment three times.
                     for (int i = 1; i < 3; i++)
@@ -147,7 +150,8 @@ namespace BulkAssessments
                     }
 
                     // Copy the workbook into the Lab scores folder
-                    workbook.SaveAs(scoresParentPath + "\\" + labPrefix + "\\" + labReport + " Scores.xlsx");
+                    workbook.SaveAs(scoresParentPath + "\\" + labPrefix + "\\" + 
+                        scoresFileName.Substring(0, scoresFileName.IndexOf(".")) + " Scores.xlsx");
                 }
             }
         }
