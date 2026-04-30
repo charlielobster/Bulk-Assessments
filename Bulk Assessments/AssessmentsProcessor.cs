@@ -42,10 +42,10 @@ namespace BulkAssessments
             if (config != null)
             {
                 apiKey = config.GetValue<string>("Gemini:ApiKey", apiKey);
-                rubricsPath = config.GetValue<string>("Folders:Rubrics", rubricsPath);
-                reportsParentPath = config.GetValue<string>("Folders:ReportsParent", reportsParentPath);
-                scoresParentPath = config.GetValue<string>("Folders:ScoresParent", scoresParentPath);
-                workbookTemplateFullPath = config.GetValue<string>("Folders:WookbookTemplate", workbookTemplateFullPath);
+                rubricsPath = config.GetValue<string>("Paths:Rubrics", rubricsPath);
+                reportsParentPath = config.GetValue<string>("Paths:ReportsParent", reportsParentPath);
+                scoresParentPath = config.GetValue<string>("Paths:ScoresParent", scoresParentPath);
+                workbookTemplateFullPath = config.GetValue<string>("Paths:WorkbookTemplate", workbookTemplateFullPath);
 
                 for (int i = 1; i < 8; i++)
                 {
@@ -94,12 +94,12 @@ namespace BulkAssessments
                 // get the Reports Folder for the Lab
                 var labReports = Directory.EnumerateDirectories(reportsParentPath + "\\" + labPrefix);
 
-                //  for each student report for that Lab's Reports Folder
+                //  For each student report for that Lab's Reports Folder,
                 foreach (var labReport in labReports)
                 {
                     using var workbook = new XLWorkbook(workbookTemplateFullPath);
                     
-                    //  Run the report assessment three times
+                    //  run the report assessment three times.
                     for (int i = 1; i < 3; i++)
                     {
                         var reportFileBytes = await File.ReadAllBytesAsync(labReport);
