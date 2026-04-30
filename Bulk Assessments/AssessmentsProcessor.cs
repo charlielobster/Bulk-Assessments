@@ -78,7 +78,7 @@ namespace BulkAssessments
                     var foundRubricFile = await client.Files.GetAsync(geminiRubricName);
                     rubricFileUri = foundRubricFile.Uri;
                 }
-                catch (ClientError e) when (e.Status == "NOT_FOUND")
+                catch (ClientError e) when (e.Status == "PERMISSION_DENIED")
                 {
                     // create a new version of the file in gemini's cloud
                     var uploadedRubricFile = await client.Files.UploadAsync(
@@ -178,9 +178,9 @@ namespace BulkAssessments
                             Part part = candidate.Content.Parts[0];
                             string jsonResponse = part.Text ?? "";
 
-                            // 2. Add your tab
-                            var ws = workbook.Worksheets.Add("Run " + i);
-                            ConvertToWorksheet(jsonResponse, ws);
+                            // Add the worksheet
+                            var worksheet = workbook.Worksheets.Add("Run " + i);
+                            ConvertToWorksheet(jsonResponse, worksheet);
                         }
                     }
 
@@ -208,10 +208,8 @@ namespace BulkAssessments
 
             worksheet.Cell(1, 1).Value = "Rule ID";
             worksheet.Cell(1, 2).Value = "Score";
-            worksheet.Cell(1, 3).Value = "Evidence";
-            worksheet.Cell(1, 4).Value = "Rule Name";
-
-            csvBuilder.AppendLine("RuleID,Score,RuleName,Evidence");
+            worksheet.Cell(1, 3).Value = "Rule Name";
+            worksheet.Cell(1, 4).Value = "Evidence";
 
             var currentRow = 2;
             foreach (var item in results)
@@ -238,8 +236,8 @@ namespace BulkAssessments
 
                 worksheet.Cell(currentRow, 1).Value = item["RuleID"]?.ToString() ?? "";
                 worksheet.Cell(currentRow, 2).Value = score;
-                worksheet.Cell(currentRow, 3).Value = item["Evidence"]?.ToString() ?? "";
-                worksheet.Cell(currentRow, 4).Value = item["RuleName"]?.ToString() ?? "";
+                worksheet.Cell(currentRow, 3).Value = item["RuleName"]?.ToString() ?? "";
+                worksheet.Cell(currentRow, 4).Value = item["Evidence"]?.ToString() ?? "";
 
                 currentRow++;
             }
