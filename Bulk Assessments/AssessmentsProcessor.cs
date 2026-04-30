@@ -1,11 +1,14 @@
 ﻿
 using ClosedXML.Excel;
-using CsvHelper;
 using Google.GenAI;
 using Google.GenAI.Types;
 using Microsoft.Extensions.Configuration;
-using System.Globalization;
+using Newtonsoft.Json.Linq;
+using System.Text;
+using System.Text.RegularExpressions;
 using File = System.IO.File;
+using Schema = Google.GenAI.Types.Schema;
+using Type = Google.GenAI.Types.Type;
 
 namespace BulkAssessments
 {
@@ -15,13 +18,17 @@ namespace BulkAssessments
         {
             //  Configuration:
             //  Values found in appsettings.json file
-            const string GEMINI_MODEL = "gemini-2.5-flash";
+            const string GEMINI_MODEL = "gemini-3-flash-preview";
+
             string apiKey = "API KEY";
             string rubricsPath = "RUBRICS FOLDER PATH";
             string reportsParentPath = "REPORTS PARENT FOLDER PATH";
             string workbookTemplateFullPath = "WORKBOOK TEMPLATE PATH";
             string scoresParentPath = "SCORES PARENT FOLDER PATH";
             string assessPrompt = "ASSESSMENT PROMPT";
+
+            string? rubricFileUri;
+            string? reportFileUri;
 
             //  Rubrics Folder
             //      Rubric is formatted using the convention: "Lab x Rubrics.pdf"
@@ -38,27 +45,24 @@ namespace BulkAssessments
                 .AddJsonFile("appsettings.json")
                 .Build();
 
-            var labPrompts = new Dictionary<string, string>();
-
             if (config != null)
             {
                 apiKey = config.GetValue<string>("Gemini:ApiKey", apiKey);
                 rubricsPath = config.GetValue<string>("Paths:Rubrics", rubricsPath);
                 reportsParentPath = config.GetValue<string>("Paths:ReportsParent", reportsParentPath);
                 scoresParentPath = config.GetValue<string>("Paths:ScoresParent", scoresParentPath);
-                workbookTemplateFullPath = config.GetValue<string>("Paths:WorkbookTemplate", workbookTemplateFullPath);
-
-                for (int i = 1; i < 8; i++)
-                {
-                    string key = "Lab " + i;
-                    string value = "";
-                    value = config.GetValue<string>("Prompts:" + key, value);
-                    labPrompts.Add(key, value);
-                }
+                workbookTemplateFullPath = config.GetValue<string>("Paths:WorkbookTemplate", workbookTemplateFullPath);               
                 assessPrompt = config.GetValue<string>("Prompts:Assess", assessPrompt);
             }
 
             var client = new Client(apiKey: apiKey);
+
+            // Check available models:
+            //var models = await client.Models.ListAsync();
+            //await foreach (var m in models)
+            //{
+            //    Console.WriteLine(m.Name); // Look for strings starting with "models/gemini-3"
+            //}
 
             // Algorithm:
             // For each of the Lab Rubrics in the Rubrics directory
@@ -67,33 +71,69 @@ namespace BulkAssessments
             {
                 var labPrefix = Path.GetFileName(labRubricFile);
                 labPrefix = labPrefix.Substring(0, 5);
-                var labPrompt = labPrompts[labPrefix];
 
-                var rubricFileBytes = await File.ReadAllBytesAsync(labRubricFile);
+                string geminiRubricName = ToGeminiName(labRubricFile);
+                try
+                {
+                    var foundRubricFile = await client.Files.GetAsync(geminiRubricName);
+                    rubricFileUri = foundRubricFile.Uri;
+                }
+                catch (ClientError e) when (e.Status == "NOT_FOUND")
+                {
+                    Console.WriteLine("File does not exist or has already expired.");
 
-                // upload the rubric file if there's no uri for it (is this necessary?)
-                // here we upload the rubrics file to gemini
-                /*
-                var uploadedFile = await client.Files.UploadAsync(
-                    labRubricFile,
-                    new UploadFileConfig { MimeType = "application/pdf" }
-                );
-                */
-                var verifyResponse = await client.Models.GenerateContentAsync(
-                    model: GEMINI_MODEL,
-                    contents: [
-                        new ()
+                    // create a new version of the file in gemini's cloud
+                    var rubricFileBytes = await File.ReadAllBytesAsync(labRubricFile);
+                    var uploadedRubricFile = await client.Files.UploadAsync(
+                        labRubricFile,
+                        new UploadFileConfig { Name = geminiRubricName, MimeType = "application/pdf" }
+                    );
+                    rubricFileUri = uploadedRubricFile.Uri;
+                }
+
+                // Setup the GenerateContentConfig
+                var contentConfig = new GenerateContentConfig
+                {
+                    // System Instructions include detailed assessment AI Rules
+                    SystemInstruction = new Content
+                    {
+                        Parts = [
+                            new () { Text = assessPrompt }
+                        ]
+                    },
+
+                    // Determinism & Formatting
+                    Temperature = 0.0f,
+                    ResponseMimeType = "application/json",
+
+                    // Forces the JSON to have these specific keys
+                    ResponseSchema = new Schema
+                    {
+                        Type = Type.Object,
+                        Properties = new Dictionary<string, Schema>
                         {
-                            Parts = [
-                                new () { InlineData = new Blob () { MimeType = "application/pdf", Data = rubricFileBytes } }, 
-//                                new () { FileData = new FileData { FileUri = uploadedFile.Uri, MimeType = uploadedFile.MimeType } },
-                                new () { Text = labPrompt }
-                            ]
-                        }
-                    ]
-                );
-
-                // todo: check the verifyResponse for matching grand totals
+                            {
+                                "audit_results", new Schema
+                                {
+                                    Type = Type.Array,
+                                    Items = new Schema
+                                    {
+                                        Type = Type.Object,
+                                        Properties = new Dictionary<string, Schema>
+                                        {
+                                            { "RuleID", new Schema { Type = Type.String } },
+                                            { "RuleName", new Schema { Type = Type.String } },
+                                            { "Evidence", new Schema { Type = Type.String } },
+                                            { "Score", new Schema { Type = Type.Integer } }
+                                        },
+                                        Required = ["RuleID", "RuleName", "Evidence", "Score" ]
+                                    }
+                                }
+                            }
+                        },
+                        Required = [ "audit_results" ]
+                    }
+                };
 
                 // get the Reports Folder for the Lab
                 var labReports = Directory.GetFiles(reportsParentPath + "\\" + labPrefix);
@@ -103,9 +143,17 @@ namespace BulkAssessments
                 {
                     using var workbook = new XLWorkbook(workbookTemplateFullPath);
                     var scoresFileName = Path.GetFileName(labReport);
+                    var geminiReportName = ToGeminiName(labReport);
+
+                    // create a new version of the report in gemini's cloud
+                    var uploadedReportFile = await client.Files.UploadAsync(
+                        labReport,
+                        new UploadFileConfig { Name = geminiReportName, MimeType = "application/pdf" }
+                    );
+                    reportFileUri = uploadedReportFile.Uri;
 
                     //  run the report assessment three times.
-                    for (int i = 1; i < 3; i++)
+                    for (int i = 1; i < 4; i++)
                     {
                         var reportFileBytes = await File.ReadAllBytesAsync(labReport);
                         var assessmentResponse = await client.Models.GenerateContentAsync(
@@ -113,10 +161,13 @@ namespace BulkAssessments
                             contents: [
                                 new ()
                                 {
-                                    Role = "user",
                                     Parts = [
-                                        new () { InlineData = new Blob () { MimeType = "application/pdf", Data = reportFileBytes } },
-                                        new () { Text = assessPrompt}
+                                        new () { Text = "REFERENCE DOCUMENT (RUBRICS):"},
+                                        new () { FileData = new FileData { FileUri = rubricFileUri, MimeType = "application/pdf" } },
+                                        new () { Text = "TARGET DOCUMENT (STUDENT REPORT):"},
+                                        new () { FileData = new FileData { FileUri = reportFileUri, MimeType = "application/pdf" } },
+                                        //   reinforce primary objectives and formatting conventions
+                                        new () { Text = "Compare the TARGET against the REFERENCE. " + assessPrompt}                                
                                     ]
                                 }
                             ]
@@ -128,33 +179,87 @@ namespace BulkAssessments
                             candidate.Content.Parts.Count > 0)
                         {
                             Part part = candidate.Content.Parts[0];
-                            string? csvScores = part.Text;
+                            string jsonResponse = part.Text ?? "";
 
-                            // debug
-                            Console.WriteLine(csvScores);
-
-                            if (csvScores != null)
-                            {
-                                using var reader = new StringReader(csvScores);
-                                using var csv = new CsvReader(reader, CultureInfo.InvariantCulture);
-
-                                // 1. Get the data as a list of dynamic objects or strings
-                                var scores = csv.GetRecords<dynamic>().ToList();
-
-                                // 2. Add your tab
-                                var ws = workbook.Worksheets.Add("Run " + i);
-
-                                // 3. This method takes the collection and maps it to cells automatically
-                                ws.Cell(1, 1).InsertTable(scores);
-                            }
+                            // 2. Add your tab
+                            var ws = workbook.Worksheets.Add("Run " + i);
+                            ConvertToWorksheet(jsonResponse, ws);
                         }
                     }
+
+                    // Delete the report from gemini's cloud
+                    await client.Files.DeleteAsync(geminiReportName);
 
                     // Copy the workbook into the Lab scores folder
                     workbook.SaveAs(scoresParentPath + "\\" + labPrefix + "\\" +
                         scoresFileName.Substring(0, scoresFileName.IndexOf(".")) + " Scores.xlsx");
                 }
+
+                // No more use for Rubric cloud file, so delete it.
+                await client.Files.DeleteAsync(geminiRubricName);
             }
         }
+
+        public static void ConvertToWorksheet(string jsonResponse, IXLWorksheet worksheet)
+        {
+            jsonResponse = jsonResponse.Substring(jsonResponse.IndexOf("["));
+            jsonResponse = jsonResponse.Substring(0, jsonResponse.LastIndexOf("]") + 1);
+
+            var csvBuilder = new StringBuilder();
+
+            var results = JArray.Parse(jsonResponse);
+
+            worksheet.Cell(1, 1).Value = "Rule ID";
+            worksheet.Cell(1, 2).Value = "Score";
+            worksheet.Cell(1, 3).Value = "Evidence";
+            worksheet.Cell(1, 4).Value = "Rule Name";
+
+            csvBuilder.AppendLine("RuleID,Score,RuleName,Evidence");
+
+            var currentRow = 2;
+            foreach (var item in results)
+            {
+                int score = 0;
+                JToken? scoreObject = item["Score"];
+                if (scoreObject != null)
+                {
+                    switch (scoreObject.Type)
+                    {
+                        case JTokenType.Integer:
+                            score = scoreObject?.ToObject<int>() ?? 0;
+                            break;
+                        case JTokenType.String:
+                            if ((scoreObject?.ToString() ?? "").ToLower().Equals("pass")) 
+                            {
+                                score = 1;
+                            }
+                            break;
+                        default:
+                            break;
+                    }
+                }
+
+                worksheet.Cell(currentRow, 1).Value = item["RuleID"]?.ToString() ?? "";
+                worksheet.Cell(currentRow, 2).Value = score;
+                worksheet.Cell(currentRow, 3).Value = item["Evidence"]?.ToString() ?? "";
+                worksheet.Cell(currentRow, 4).Value = item["RuleName"]?.ToString() ?? "";
+
+                currentRow++;
+            }
+        }
+
+        public static string ToGeminiName(string path)
+        {
+            // Get name without extension
+            string rawName = Path.GetFileNameWithoutExtension(path);
+
+            // Keep only alphanumeric and hyphens, convert to lowercase
+            string sanitized = Regex.Replace(rawName.ToLower(), @"[^a-z0-9]", "-")
+                                    .Trim('-'); // Clean up trailing hyphens
+
+            // Must start with "files/"  
+            return $"files/{sanitized}";
+        }
+
     }
 }
