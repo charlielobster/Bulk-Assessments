@@ -1,4 +1,5 @@
-﻿using ClosedXML.Excel;
+﻿
+using ClosedXML.Excel;
 using CsvHelper;
 using Google.GenAI;
 using Google.GenAI.Types;
@@ -102,7 +103,7 @@ namespace BulkAssessments
                 {
                     using var workbook = new XLWorkbook(workbookTemplateFullPath);
                     var scoresFileName = Path.GetFileName(labReport);
-                    
+
                     //  run the report assessment three times.
                     for (int i = 1; i < 3; i++)
                     {
@@ -150,7 +151,7 @@ namespace BulkAssessments
                     }
 
                     // Copy the workbook into the Lab scores folder
-                    workbook.SaveAs(scoresParentPath + "\\" + labPrefix + "\\" + 
+                    workbook.SaveAs(scoresParentPath + "\\" + labPrefix + "\\" +
                         scoresFileName.Substring(0, scoresFileName.IndexOf(".")) + " Scores.xlsx");
                 }
             }
