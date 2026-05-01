@@ -250,6 +250,7 @@ namespace BulkAssessments
             }
         }
 
+        // todo: simplify this for conventions above
         public static string ToGeminiName(string path)
         {
             // Get name without extension
