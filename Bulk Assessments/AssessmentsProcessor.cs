@@ -1,11 +1,19 @@
 ﻿
 using ClosedXML.Excel;
+using DocumentFormat.OpenXml.Bibliography;
+using DocumentFormat.OpenXml.Presentation;
+using DocumentFormat.OpenXml.Vml;
+using DocumentFormat.OpenXml.Wordprocessing;
 using Google.GenAI;
 using Google.GenAI.Types;
+using Microsoft.Extensions.AI;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Playwright;
 using Newtonsoft.Json.Linq;
+using System.Runtime.Intrinsics.X86;
 using System.Text;
 using System.Text.RegularExpressions;
+using static System.Net.Mime.MediaTypeNames;
 using File = System.IO.File;
 using Schema = Google.GenAI.Types.Schema;
 using Type = Google.GenAI.Types.Type;
@@ -18,8 +26,6 @@ namespace BulkAssessments
         {
             //  Configuration:
             //  Values found in appsettings.json file
-            const string GEMINI_MODEL = "gemini-1.5-flash";
-
             string apiKey = "API KEY";
             string rubricsPath = "RUBRICS FOLDER PATH";
             string reportsParentPath = "REPORTS PARENT FOLDER PATH";
@@ -59,8 +65,67 @@ namespace BulkAssessments
             //var models = await client.Models.ListAsync();
             //await foreach (var m in models)
             //{
-            //    Console.WriteLine(m.Name); // Look for strings starting with "models/gemini-3"
+            //    System.Console.WriteLine(m.Name); // look for strings starting with "models/gemini-3"
             //}
+
+            /*
+                models/gemini-2.5-flash
+                models/gemini-2.5-pro
+                models/gemini-2.0-flash
+                models/gemini-2.0-flash-001
+                models/gemini-2.0-flash-lite-001
+                models/gemini-2.0-flash-lite
+                models/gemini-2.5-flash-preview-tts
+                models/gemini-2.5-pro-preview-tts
+                models/gemma-3-1b-it
+                models/gemma-3-4b-it
+                models/gemma-3-12b-it
+                models/gemma-3-27b-it
+                models/gemma-3n-e4b-it
+                models/gemma-3n-e2b-it
+                models/gemma-4-26b-a4b-it
+                models/gemma-4-31b-it
+                models/gemini-flash-latest
+                models/gemini-flash-lite-latest
+                models/gemini-pro-latest
+                models/gemini-2.5-flash-lite
+                models/gemini-2.5-flash-image
+                models/gemini-3-pro-preview
+                models/gemini-3-flash-preview
+                models/gemini-3.1-pro-preview
+                models/gemini-3.1-pro-preview-customtools
+                models/gemini-3.1-flash-lite-preview
+                models/gemini-3-pro-image-preview
+                models/nano-banana-pro-preview
+                models/gemini-3.1-flash-image-preview
+                models/lyria-3-clip-preview
+                models/lyria-3-pro-preview
+                models/gemini-3.1-flash-tts-preview
+                models/gemini-robotics-er-1.5-preview
+                models/gemini-robotics-er-1.6-preview
+                models/gemini-2.5-computer-use-preview-10-2025
+                models/deep-research-max-preview-04-2026
+                models/deep-research-preview-04-2026
+                models/deep-research-pro-preview-12-2025
+                models/gemini-embedding-001
+                models/gemini-embedding-2-preview
+                models/gemini-embedding-2
+                models/aqa
+                models/imagen-4.0-generate-001
+                models/imagen-4.0-ultra-generate-001
+                models/imagen-4.0-fast-generate-001
+                models/veo-2.0-generate-001
+                models/veo-3.0-generate-001
+                models/veo-3.0-fast-generate-001
+                models/veo-3.1-generate-preview
+                models/veo-3.1-fast-generate-preview
+                models/veo-3.1-lite-generate-preview
+                models/gemini-2.5-flash-native-audio-latest
+                models/gemini-2.5-flash-native-audio-preview-09-2025
+                models/gemini-2.5-flash-native-audio-preview-12-2025
+                models/gemini-3.1-flash-live-preview
+            */
+            const string GEMINI_MODEL = "gemini-2.5-flash";
 
             // Algorithm:
             // For each of the Lab Rubrics in the Rubrics directory
