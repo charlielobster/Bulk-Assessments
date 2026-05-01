@@ -17,6 +17,7 @@ using static System.Net.Mime.MediaTypeNames;
 using File = System.IO.File;
 using Schema = Google.GenAI.Types.Schema;
 using Type = Google.GenAI.Types.Type;
+using Path = System.IO.Path;
 
 namespace BulkAssessments
 {
