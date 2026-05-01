@@ -1,19 +1,11 @@
 ﻿
 using ClosedXML.Excel;
-using DocumentFormat.OpenXml.Bibliography;
-using DocumentFormat.OpenXml.Presentation;
-using DocumentFormat.OpenXml.Vml;
-using DocumentFormat.OpenXml.Wordprocessing;
 using Google.GenAI;
 using Google.GenAI.Types;
-using Microsoft.Extensions.AI;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Playwright;
 using Newtonsoft.Json.Linq;
-using System.Runtime.Intrinsics.X86;
 using System.Text;
 using System.Text.RegularExpressions;
-using static System.Net.Mime.MediaTypeNames;
 using File = System.IO.File;
 using Schema = Google.GenAI.Types.Schema;
 using Type = Google.GenAI.Types.Type;
@@ -126,7 +118,7 @@ namespace BulkAssessments
                 models/gemini-2.5-flash-native-audio-preview-12-2025
                 models/gemini-3.1-flash-live-preview
             */
-            const string GEMINI_MODEL = "gemini-2.5-flash";
+            const string GEMINI_MODEL = "gemini-flash-latest";
 
             // Algorithm:
             // For each of the Lab Rubrics in the Rubrics directory
@@ -256,7 +248,7 @@ namespace BulkAssessments
                         }
 
                         // Sleep for three minutes to keep TPM down
-                        Thread.Sleep(180000);
+                        Thread.Sleep(60000);
                     }
 
                     // Delete the report from gemini's cloud
@@ -267,14 +259,14 @@ namespace BulkAssessments
                         scoresFileName.Substring(0, scoresFileName.IndexOf(".")) + " Scores.xlsx");
 
                     // Sleep for 5 minutes between students
-                    Thread.Sleep(300000);
+//                    Thread.Sleep(60000);
                 }
 
                 // No more use for Rubric cloud file, so delete it.
                 await client.Files.DeleteAsync(geminiRubricName);
 
                 // Also take a breather between Rubrics
-                Thread.Sleep(300000);
+//                Thread.Sleep(300000);
             }
         }
 
