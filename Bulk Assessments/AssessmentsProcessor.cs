@@ -18,7 +18,7 @@ namespace BulkAssessments
         {
             //  Configuration:
             //  Values found in appsettings.json file
-            const string GEMINI_MODEL = "gemini-3-flash-preview";
+            const string GEMINI_MODEL = "gemini-1.5-flash";
 
             string apiKey = "API KEY";
             string rubricsPath = "RUBRICS FOLDER PATH";
@@ -140,14 +140,22 @@ namespace BulkAssessments
                     var scoresFileName = Path.GetFileName(labReport);
                     var geminiReportName = ToGeminiName(labReport);
 
-                    // create a new version of the report in gemini's cloud
-                    var uploadedReportFile = await client.Files.UploadAsync(
-                        labReport,
-                        new UploadFileConfig { Name = geminiReportName, MimeType = "application/pdf" }
-                    );
-                    reportFileUri = uploadedReportFile.Uri;
+                    try
+                    {
+                        var foundReportFile = await client.Files.GetAsync(geminiReportName);
+                        rreportFileUri = foundReportFile.Uri;
+                    }
+                    catch (ClientError e) when (e.Status == "PERMISSION_DENIED")
+                    {
+                        // or else create a new version of the report in gemini's cloud.
+                        var uploadedReportFile = await client.Files.UploadAsync(
+                            labReport,
+                            new UploadFileConfig { Name = geminiReportName, MimeType = "application/pdf" }
+                        );
+                        reportFileUri = uploadedReportFile.Uri;
+                    }
 
-                    //  run the report assessment three times.
+                    //  Run the report assessment three times.
                     for (int i = 1; i < 4; i++)
                     {
                         var reportFileBytes = await File.ReadAllBytesAsync(labReport);
@@ -181,8 +189,8 @@ namespace BulkAssessments
                             ConvertToWorksheet(jsonResponse, worksheet);
                         }
 
-                        // Sleep for a minute to keep TPM down
-                        Thread.Sleep(60000);
+                        // Sleep for three minutes to keep TPM down
+                        Thread.Sleep(180000);
                     }
 
                     // Delete the report from gemini's cloud
@@ -192,14 +200,14 @@ namespace BulkAssessments
                     workbook.SaveAs(scoresParentPath + "\\" + labPrefix + "\\" +
                         scoresFileName.Substring(0, scoresFileName.IndexOf(".")) + " Scores.xlsx");
 
-                    // Sleep for 3 minutes between students
-                    Thread.Sleep(180000);
+                    // Sleep for 5 minutes between students
+                    Thread.Sleep(300000);
                 }
 
                 // No more use for Rubric cloud file, so delete it.
                 await client.Files.DeleteAsync(geminiRubricName);
 
-                // Take a breather between Rubrics
+                // Also take a breather between Rubrics
                 Thread.Sleep(300000);
             }
         }
