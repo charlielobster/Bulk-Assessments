@@ -20,6 +20,8 @@ namespace BulkAssessments
             //  Configuration:
             //  Values found in appsettings.json file
             string apiKey = "API KEY";
+            string geminiAlias = "GEMINI ALIAS"; // prefix for user file uploads to avoid naming conflicts
+            string geminiModel = "GEMINI MODEL"; // Check available models
             string rubricsPath = "RUBRICS FOLDER PATH";
             string reportsParentPath = "REPORTS PARENT FOLDER PATH";
             string workbookTemplateFullPath = "WORKBOOK TEMPLATE PATH";
@@ -44,6 +46,8 @@ namespace BulkAssessments
 
             if (config != null)
             {
+                geminiModel = config.GetValue<string>("Gemini:Model", apiKey);
+                geminiAlias = config.GetValue<string>("Gemini:Alias", apiKey);
                 apiKey = config.GetValue<string>("Gemini:ApiKey", apiKey);
                 rubricsPath = config.GetValue<string>("Paths:Rubrics", rubricsPath);
                 reportsParentPath = config.GetValue<string>("Paths:ReportsParent", reportsParentPath);
@@ -54,13 +58,26 @@ namespace BulkAssessments
 
             var client = new Client(apiKey: apiKey);
 
-            // Check available models:
-            //var models = await client.Models.ListAsync();
-            //await foreach (var m in models)
-            //{
-            //    System.Console.WriteLine(m.Name); // look for strings starting with "models/gemini-3"
-            //}
 
+            // Iterate through and display file details
+            /*var filesResponse = await client.Files.ListAsync();
+            if (filesResponse != null)
+            {
+                await foreach (var file in filesResponse)
+                {
+                    Console.WriteLine($"File Name: {file.DisplayName}");
+                    Console.WriteLine($"File URI: {file.Uri}");
+                    Console.WriteLine($"Mime Type: {file.MimeType}");
+                    Console.WriteLine("----------------------------");
+                }
+            }*/
+
+            // Check available models:
+            /*var models = await client.Models.ListAsync();
+            await foreach (var m in models)
+            {
+                System.Console.WriteLine(m.Name); // look for strings starting with "models/gemini-3"
+            }*/
             /*
                 models/gemini-2.5-flash
                 models/gemini-2.5-pro
@@ -118,7 +135,6 @@ namespace BulkAssessments
                 models/gemini-2.5-flash-native-audio-preview-12-2025
                 models/gemini-3.1-flash-live-preview
             */
-            const string GEMINI_MODEL = "gemini-flash-latest";
 
             // Algorithm:
             // For each of the Lab Rubrics in the Rubrics directory
@@ -128,7 +144,7 @@ namespace BulkAssessments
                 var labPrefix = Path.GetFileName(labRubricFile);
                 labPrefix = labPrefix.Substring(0, 5);
 
-                string geminiRubricName = ToGeminiName(labRubricFile);
+                string geminiRubricName = ToGeminiName(labRubricFile, geminiAlias);
                 try
                 {
                     var foundRubricFile = await client.Files.GetAsync(geminiRubricName);
@@ -196,7 +212,7 @@ namespace BulkAssessments
                 {
                     using var workbook = new XLWorkbook(workbookTemplateFullPath);
                     var scoresFileName = Path.GetFileName(labReport);
-                    var geminiReportName = ToGeminiName(labReport);
+                    var geminiReportName = ToGeminiName(labReport, geminiAlias);
 
                     try
                     {
@@ -214,11 +230,12 @@ namespace BulkAssessments
                     }
 
                     //  Run the report assessment three times.
+                    //  todo: config settings for run count? save workbook between runs?
                     for (int i = 1; i < 4; i++)
                     {
                         var reportFileBytes = await File.ReadAllBytesAsync(labReport);
                         var assessmentResponse = await client.Models.GenerateContentAsync(
-                            model: GEMINI_MODEL,
+                            model: geminiModel,
                             contents: [
                                 new ()
                                 {
@@ -255,6 +272,7 @@ namespace BulkAssessments
                     await client.Files.DeleteAsync(geminiReportName);
 
                     // Copy the workbook into the Lab scores folder
+                    // todo: move report to Processed folder
                     workbook.SaveAs(scoresParentPath + "\\" + labPrefix + "\\" +
                         scoresFileName.Substring(0, scoresFileName.IndexOf(".")) + " Scores.xlsx");
 
@@ -263,6 +281,7 @@ namespace BulkAssessments
                 }
 
                 // No more use for Rubric cloud file, so delete it.
+                // todo: Move Rubrics file to Processed folder
                 await client.Files.DeleteAsync(geminiRubricName);
 
                 // Also take a breather between Rubrics
@@ -317,7 +336,7 @@ namespace BulkAssessments
         }
 
         // todo: simplify this for conventions above
-        public static string ToGeminiName(string path)
+        public static string ToGeminiName(string path, string alias = "")
         {
             // Get name without extension
             string rawName = Path.GetFileNameWithoutExtension(path);
@@ -327,7 +346,7 @@ namespace BulkAssessments
                                     .Trim('-'); // Clean up trailing hyphens
 
             // Must start with "files/"  
-            return $"files/{sanitized}";
+            return $"files/{alias}{sanitized}";
         }
 
     }
