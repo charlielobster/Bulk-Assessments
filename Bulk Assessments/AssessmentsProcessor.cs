@@ -143,7 +143,7 @@ namespace BulkAssessments
                     try
                     {
                         var foundReportFile = await client.Files.GetAsync(geminiReportName);
-                        rreportFileUri = foundReportFile.Uri;
+                        reportFileUri = foundReportFile.Uri;
                     }
                     catch (ClientError e) when (e.Status == "PERMISSION_DENIED")
                     {
