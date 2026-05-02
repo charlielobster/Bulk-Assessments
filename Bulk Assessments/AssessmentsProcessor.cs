@@ -406,11 +406,17 @@ namespace BulkAssessments
                                     else
                                     {
                                         Console.WriteLine("Json format issue, no []s found: " + jsonResponse);
+
+                                        // take it from the top
+                                        goto restart;
                                     }
                                 }
                                 catch (Exception ex) // set breakpoint here
                                 {
                                     Console.WriteLine("Exception: " + ex.Message);
+
+                                    // take it from the top
+                                    goto restart;
                                 }
                             }
                         }
