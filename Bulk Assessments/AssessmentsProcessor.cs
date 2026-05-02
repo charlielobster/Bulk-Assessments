@@ -91,7 +91,9 @@ namespace BulkAssessments
             }
 
             #region ConfigurationDump
+            Console.WriteLine();
             Console.WriteLine("--- CONFIGURATION ---");
+            Console.WriteLine();
             Console.WriteLine("Gemini Aliases");
             Console.WriteLine("Name\t\tApiKey");
             foreach (var alias in aliases)
@@ -107,25 +109,26 @@ namespace BulkAssessments
             }
             Console.WriteLine("Current Model: " + modelsEnumerator.Current);
             Console.WriteLine();
-
             Console.WriteLine("Paths");
             Console.WriteLine("Rubrics Folder: " + rubricsPath);
             Console.WriteLine("Reports Parent: " + reportsParentPath);
             Console.WriteLine("Processed Files Parent: " + processedParentPath);
             Console.WriteLine("Scores Parent: " + scoresParentPath);
             Console.WriteLine();
-
             Console.WriteLine("Workbook Template Full Path: " + workbookTemplateFullPath);
             Console.WriteLine("Sleep Interval: " + sleepInterval);
             Console.WriteLine();
             Console.WriteLine("Assessment Prompt: ");
             Console.WriteLine(assessmentPrompt);
             Console.WriteLine();
+            Console.WriteLine();
             #endregion
 
         restart:
 
-            Console.WriteLine("Restarting Main Loop...");
+            Console.WriteLine();
+            Console.WriteLine("--- MAIN LOOP ---");
+            Console.WriteLine();
 
             var client = new Client(apiKey: aliasEnumerator.Current.ApiKey);
 
@@ -374,7 +377,8 @@ namespace BulkAssessments
 
                                 try
                                 {
-                                    // Can get various exceptions here, worth checking manually
+                                    // Can get various exceptions here, checking manually.
+                                    // (could be PII, bad JSON formatting, etc)
                                     if (jsonResponse.IndexOf("[") > -1 && jsonResponse.LastIndexOf("]") > -1)
                                     {
                                         jsonResponse = jsonResponse.Substring(jsonResponse.IndexOf("["));
@@ -414,11 +418,18 @@ namespace BulkAssessments
                         catch (ClientError ex) when (ex.StatusCode == 429)
                         {
                             // Specific handling for 429 / Resource Exhausted
+                            Console.WriteLine();
+                            Console.WriteLine("--- RESOURCE EXHAUSTION --");
+                            Console.WriteLine();
                             Console.WriteLine("Resources exhausted for alias: " + aliasEnumerator.Current.Name);
 
                             // Switch to the next alias and api key
                             if (!aliasEnumerator.MoveNext())
                             {
+                                Console.WriteLine();
+                                Console.WriteLine("--- ALIAS EXHAUSTION --");
+                                Console.WriteLine();
+
                                 // If we reached here, we spent all our quotas, for all our aliases
                                 Console.WriteLine("Exhausted all aliases for the current model: " + modelsEnumerator.Current);
 
@@ -429,6 +440,10 @@ namespace BulkAssessments
                                 // Check to see if we did anything with any alias last round
                                 if (!anyApiKeyWorks)
                                 {
+                                    Console.WriteLine();
+                                    Console.WriteLine("--- MODEL EXHAUSTION --");
+                                    Console.WriteLine();
+
                                     // If all our aliases are exhausted and we didn't do anything last round, change the model.
                                     if (!modelsEnumerator.MoveNext())
                                     {
