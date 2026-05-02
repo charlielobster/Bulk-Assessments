@@ -210,10 +210,26 @@ namespace BulkAssessments
                 //  For each student report for that Lab's Reports Folder,
                 foreach (var labReport in labReports)
                 {
-                    using var workbook = new XLWorkbook(workbookTemplateFullPath);
-                    var scoresFileName = Path.GetFileName(labReport);
+                    XLWorkbook workbook;
+
                     var geminiReportName = ToGeminiName(labReport, geminiAlias);
 
+                    string scoresFileName = Path.GetFileName(labReport);
+                    string reportScoresFullPath = scoresParentPath + "\\" + labPrefix + "\\" +
+                        scoresFileName.Substring(0, scoresFileName.IndexOf(".")) + " Scores.xlsx";
+
+                    // Create the Report Scores Workbook now, if it doesn't already exist
+                    if (File.Exists(reportScoresFullPath))
+                    {
+                        workbook = new XLWorkbook(reportScoresFullPath);
+                    }
+                    else
+                    {
+                        workbook = new XLWorkbook(workbookTemplateFullPath);
+                        workbook.SaveAs(reportScoresFullPath);
+                    }
+
+                    // If the report is not already uploaded, upload it now
                     try
                     {
                         var foundReportFile = await client.Files.GetAsync(geminiReportName);
@@ -230,9 +246,11 @@ namespace BulkAssessments
                     }
 
                     //  Run the report assessment three times.
-                    //  todo: config settings for run count? save workbook between runs?
+                    //  todo: config settings for run count?
                     for (int i = 1; i < 4; i++)
                     {
+                        if (workbook.Worksheets.FirstOrDefault(ws => ws.Name == "Run " + i) != default) continue;
+
                         var reportFileBytes = await File.ReadAllBytesAsync(labReport);
                         var assessmentResponse = await client.Models.GenerateContentAsync(
                             model: geminiModel,
@@ -251,7 +269,7 @@ namespace BulkAssessments
                             ]
                         );
 
-                        // Collect each in a separate spreadsheet in a workbook named after the student's report
+                        // Collect each assessment in a separate spreadsheet in the Report's Scores Workbook
                         Candidate? candidate = assessmentResponse.Candidates?.FirstOrDefault();
                         if (candidate != null && candidate.Content != null && candidate.Content.Parts != null &&
                             candidate.Content.Parts.Count > 0)
@@ -262,9 +280,10 @@ namespace BulkAssessments
                             // Add the worksheet
                             var worksheet = workbook.Worksheets.Add("Run " + i);
                             ConvertToWorksheet(jsonResponse, worksheet);
+                            workbook.Save();
                         }
 
-                        // Sleep for three minutes to keep TPM down
+                        // Sleep for a minute to keep TPM down
                         Thread.Sleep(60000);
                     }
 
@@ -273,10 +292,8 @@ namespace BulkAssessments
 
                     // Copy the workbook into the Lab scores folder
                     // todo: move report to Processed folder
-                    workbook.SaveAs(scoresParentPath + "\\" + labPrefix + "\\" +
-                        scoresFileName.Substring(0, scoresFileName.IndexOf(".")) + " Scores.xlsx");
 
-                    // Sleep for 5 minutes between students
+                    // Sleep for a minute between students
 //                    Thread.Sleep(60000);
                 }
 
@@ -293,8 +310,6 @@ namespace BulkAssessments
         {
             jsonResponse = jsonResponse.Substring(jsonResponse.IndexOf("["));
             jsonResponse = jsonResponse.Substring(0, jsonResponse.LastIndexOf("]") + 1);
-
-            var csvBuilder = new StringBuilder();
 
             var results = JArray.Parse(jsonResponse);
 
