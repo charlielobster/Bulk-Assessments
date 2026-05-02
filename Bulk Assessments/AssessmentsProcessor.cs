@@ -495,8 +495,6 @@ namespace BulkAssessments
 
         public static void ConvertToWorksheet(JArray assessmentResults, IXLWorksheet worksheet)
         {
-
-
             worksheet.Cell(1, 1).Value = "Rule ID";
             worksheet.Cell(1, 2).Value = "Score";
             worksheet.Cell(1, 3).Value = "Rule Name";
