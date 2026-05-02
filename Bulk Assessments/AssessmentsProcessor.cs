@@ -346,7 +346,7 @@ namespace BulkAssessments
                             Console.WriteLine("Requesting Assessment, index: " + i + " ...");
 
                             var assessmentResponse = await client.Models.GenerateContentAsync(
-                                model: geminiModel,
+                                model: modelsEnumerator.Current,
                                 contents: [
                                     new ()
                                     {
