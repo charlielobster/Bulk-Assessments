@@ -12,8 +12,10 @@ using Path = System.IO.Path;
 
 namespace BulkAssessments
 {
+    // Alias DTO
     public class GeminiAlias 
     {
+        // Two constructors for such a tiny class seems a little overkill...
         public GeminiAlias() { Name = "NAME"; ApiKey = "API KEY"; }
         public GeminiAlias(string name, string apiKey) { Name = name; ApiKey = apiKey; } 
         public string Name { get; set; } // prefix for user file uploads (to avoid naming conflicts)
@@ -33,19 +35,32 @@ namespace BulkAssessments
             string workbookTemplateFullPath = "WORKBOOK TEMPLATE PATH";
             string scoresParentPath = "SCORES PARENT FOLDER PATH";
             string assessmentPrompt = "ASSESSMENT PROMPT";
+            int sleepInterval = 60000;
 
             string? rubricFileUri;
             string? reportFileUri;
 
+            // Handle Quota Limits:
+            // Try changing account alias and api keys first
             List<GeminiAlias> aliases = [];
             var aliasEnumerator = aliases.GetEnumerator();
 
-            //  Rubrics Folder
+            bool anyApiKeyWorks = false; // if true, any api key for the current enumeration of GeminiAliases worked.
+                                         // i.e., we completed a request without hitting a quota exception   
+
+            // If those run out, round-robin through the Gemini Models
+            // (i.e., Prefer using the model as long as possible before switching.)
+            List<string> models = [];
+            var modelsEnumerator = models.GetEnumerator();
+
+            //  Rubrics Folder:
             //      Rubric is formatted using the convention: "Lab x Rubrics.pdf"
             //      (e.g., "Lab 5 Rubrics.pdf")
             //  For each lab,
-            //      Student Reports Folder
-            //  Student reports use the convention:
+            //      Student Reports Folder:
+            //          <ReportsParent>\Lab x\
+            //          (e.g., "..\Data\Reports\Lab 3\")
+            //  Reports use the convention:
             //      "(2 letters upper case) Lab x.pdf"
             //      (e.g., "AF Lab 6.pdf", "JP Lab 3.pdf")
             IConfiguration config = new ConfigurationBuilder()
@@ -55,24 +70,65 @@ namespace BulkAssessments
 
             if (config != null)
             {
-                geminiModel = config.GetValue<string>("Gemini:Model", geminiModel);
-                rubricsPath = config.GetValue<string>("Paths:Rubrics", rubricsPath);
-                reportsParentPath = config.GetValue<string>("Paths:ReportsParent", reportsParentPath);
-                processedParentPath = config.GetValue<string>("Paths:ProcessedParent", processedParentPath);
+                config.GetSection("Gemini:Models").Bind(models);
+                modelsEnumerator = models.GetEnumerator();
+                modelsEnumerator.MoveNext();
+
                 config.GetSection("Gemini:Aliases").Bind(aliases);
                 aliasEnumerator = aliases.GetEnumerator();
                 aliasEnumerator.MoveNext();
+
+                rubricsPath = config.GetValue<string>("Paths:Rubrics", rubricsPath);
+                reportsParentPath = config.GetValue<string>("Paths:ReportsParent", reportsParentPath);
+                processedParentPath = config.GetValue<string>("Paths:ProcessedParent", processedParentPath);
                 scoresParentPath = config.GetValue<string>("Paths:ScoresParent", scoresParentPath);
                 workbookTemplateFullPath = config.GetValue<string>("Paths:WorkbookTemplate", workbookTemplateFullPath);               
+
                 assessmentPrompt = config.GetValue<string>("Prompts:Assessment", assessmentPrompt);
+                sleepInterval = config.GetValue<int>("SleepInterval", sleepInterval);
             }
 
-        start:
+            #region ConfigurationDump
+            Console.WriteLine("--- CONFIGURATION ---");
+            Console.WriteLine("Gemini Aliases");
+            Console.WriteLine("Name\t\tApiKey");
+            foreach (var alias in aliases)
+            {
+                Console.WriteLine(alias.Name + "\t\t" + alias.ApiKey);
+            }
+            Console.WriteLine("Current Alias Name: " + aliasEnumerator.Current.Name + " ApiKey: " + aliasEnumerator.Current.ApiKey);
+            Console.WriteLine();
+            Console.WriteLine("Gemini AI Models");
+            foreach (var model in models)
+            {
+                Console.WriteLine(model);
+            }
+            Console.WriteLine("Current Model: " + modelsEnumerator.Current);
+            Console.WriteLine();
+
+            Console.WriteLine("Paths");
+            Console.WriteLine("Rubrics Folder: " + rubricsPath);
+            Console.WriteLine("Reports Parent: " + reportsParentPath);
+            Console.WriteLine("Processed Files Parent: " + processedParentPath);
+            Console.WriteLine("Scores Parent: " + scoresParentPath);
+            Console.WriteLine();
+
+            Console.WriteLine("Workbook Template Full Path: " + workbookTemplateFullPath);
+            Console.WriteLine("Sleep Interval: " + sleepInterval);
+            Console.WriteLine();
+            Console.WriteLine("Assessment Prompt: ");
+            Console.WriteLine(assessmentPrompt);
+            Console.WriteLine();
+            #endregion
+
+        restart:
+
+            Console.WriteLine("Restarting Main Loop...");
 
             var client = new Client(apiKey: aliasEnumerator.Current.ApiKey);
 
-            // Iterate through and display file details
-            /*var filesResponse = await client.Files.ListAsync();
+            /* // Iterate through and display file details
+            var filesResponse = await client.Files.ListAsync();
             if (filesResponse != null)
             {
                 await foreach (var file in filesResponse)
@@ -90,7 +146,8 @@ namespace BulkAssessments
             {
                 System.Console.WriteLine(m.Name); // look for strings starting with "models/gemini-3"
             }*/
-            /*
+            /*  // Models example output
+
                 models/gemini-2.5-flash
                 models/gemini-2.5-pro
                 models/gemini-2.0-flash
@@ -151,20 +208,31 @@ namespace BulkAssessments
             // Algorithm:
             // For each of the Lab Rubrics in the Rubrics directory
             var labRubrics = Directory.GetFiles(rubricsPath);
+            Console.WriteLine("Found " + labRubrics.Length + " Rubrics files");
+
+            #region RubricsLoop
+
             foreach (var labRubricFile in labRubrics)
             {
+                Console.WriteLine("Checking Rubric: " + labRubricFile);
+
                 var labPrefix = Path.GetFileName(labRubricFile);
                 labPrefix = labPrefix.Substring(0, 5);
 
                 string geminiRubricName = ToGeminiName(labRubricFile, aliasEnumerator.Current.Name);
                 try
                 {
+                    // If the Rubrics file is not already uploaded, upload it now.
+                    Console.WriteLine("Checking for Rubrics file existence on cloud: " + geminiRubricName);
+
                     var foundRubricFile = await client.Files.GetAsync(geminiRubricName);
                     rubricFileUri = foundRubricFile.Uri;
                 }
                 catch (ClientError e) when (e.Status == "PERMISSION_DENIED")
                 {
-                    // create a new version of the file in gemini's cloud
+                    // Otherwise, create a new version of the Rubrics file in gemini's cloud.
+                    Console.WriteLine("File not found, uploading file: " + geminiRubricName);
+
                     var uploadedRubricFile = await client.Files.UploadAsync(
                         labRubricFile,
                         new UploadFileConfig { Name = geminiRubricName, MimeType = "application/pdf" }
@@ -206,12 +274,18 @@ namespace BulkAssessments
                     }
                 };
 
-                // get the Reports Folder for the Lab
+                // Get the Reports Folder for the Lab.
                 var labReports = Directory.GetFiles(reportsParentPath + "\\" + labPrefix);
+
+                Console.WriteLine("Found " + labReports.Length + " Lab Reports to assess.");
+
+                #region ReportsLoop
 
                 //  For each student report for that Lab's Reports Folder,
                 foreach (var labReport in labReports)
                 {
+                    Console.WriteLine("Assessing Report " + labReport);
+
                     XLWorkbook workbook;
 
                     var geminiReportName = ToGeminiName(labReport, aliasEnumerator.Current.Name);
@@ -220,26 +294,31 @@ namespace BulkAssessments
                     string reportScoresFullPath = scoresParentPath + "\\" + labPrefix + "\\" +
                         scoresFileName.Substring(0, scoresFileName.IndexOf(".")) + " Scores.xlsx";
 
-                    // Create the Report Scores Workbook now, if it doesn't already exist
+                    // Create the Report Scores Workbook now, if it doesn't already exist.
                     if (File.Exists(reportScoresFullPath))
                     {
+                        Console.WriteLine("Found existing Scores Workbook: " + reportScoresFullPath);
                         workbook = new XLWorkbook(reportScoresFullPath);
                     }
                     else
                     {
+                        Console.WriteLine("Creating new Scores Workbook: " + reportScoresFullPath);
                         workbook = new XLWorkbook(workbookTemplateFullPath);
                         workbook.SaveAs(reportScoresFullPath);
                     }
 
-                    // If the report is not already uploaded, upload it now
+                    // If the Report is not already uploaded, upload it now.
                     try
                     {
+                        Console.WriteLine("Checking for Report file existence on cloud: " + geminiReportName);
                         var foundReportFile = await client.Files.GetAsync(geminiReportName);
                         reportFileUri = foundReportFile.Uri;
                     }
                     catch (ClientError e) when (e.Status == "PERMISSION_DENIED")
                     {
-                        // or else create a new version of the report in gemini's cloud.
+                        // Otherwise, create a new version of the Report in gemini's cloud.
+                        Console.WriteLine("File not found, uploading file: " + geminiReportName);
+
                         var uploadedReportFile = await client.Files.UploadAsync(
                             labReport,
                             new UploadFileConfig { Name = geminiReportName, MimeType = "application/pdf" }
@@ -247,32 +326,41 @@ namespace BulkAssessments
                         reportFileUri = uploadedReportFile.Uri;
                     }
 
+                    #region AssessmentsLoop
+
                     //  Run the report assessment three times.
                     //  todo: config settings for run count?
                     for (int i = 1; i < 4; i++)
                     {
                         // If Worksheet already exists, we already processed this run.
-                        if (workbook.Worksheets.FirstOrDefault(ws => ws.Name == "Run " + i) != default) continue;
-
+                        if (workbook.Worksheets.FirstOrDefault(ws => ws.Name == "Run " + i) != default)
+                        {
+                            Console.WriteLine("Found existing sheet for this index: " + i + " -- Continuing...");
+                            continue;
+                        }
                         try
                         {
                             // Attempt an assessment
+                            Console.WriteLine("Requesting Assessment, index: " + i + " ...");
+
                             var assessmentResponse = await client.Models.GenerateContentAsync(
                                 model: geminiModel,
                                 contents: [
                                     new ()
-                            {
-                                Parts = [
-                                    new () { Text = "REFERENCE DOCUMENT (RUBRICS):"},
-                                    new () { FileData = new FileData { FileUri = rubricFileUri, MimeType = "application/pdf" } },
-                                    new () { Text = "TARGET DOCUMENT (STUDENT REPORT):"},
-                                    new () { FileData = new FileData { FileUri = reportFileUri, MimeType = "application/pdf" } },
-                                    //   reinforce primary objectives and formatting conventions
-                                    new () { Text = "Compare the TARGET against the REFERENCE. " + assessmentPrompt}
-                                ]
-                            }
+                                    {
+                                        Parts = [
+                                            new () { Text = "REFERENCE DOCUMENT (RUBRICS):"},
+                                            new () { FileData = new FileData { FileUri = rubricFileUri, MimeType = "application/pdf" } },
+                                            new () { Text = "TARGET DOCUMENT (STUDENT REPORT):"},
+                                            new () { FileData = new FileData { FileUri = reportFileUri, MimeType = "application/pdf" } },
+                                            //   reinforce primary objectives and formatting conventions
+                                            new () { Text = "Compare the TARGET against the REFERENCE. " + assessmentPrompt}
+                                        ]
+                                    }
                                 ]
                             );
+
+                            Console.WriteLine("Assessment Complete");
 
                             // Collect each assessment in a separate spreadsheet in this Report's Scores Workbook
                             Candidate? candidate = assessmentResponse.Candidates?.FirstOrDefault();
@@ -282,36 +370,98 @@ namespace BulkAssessments
                                 Part part = candidate.Content.Parts[0];
                                 string jsonResponse = part.Text ?? "";
 
-                                // Add the worksheet.
-                                var worksheet = workbook.Worksheets.Add("Run " + i);
-                                ConvertToWorksheet(jsonResponse, worksheet);
+                                try
+                                {
+                                    // Can get various exceptions here, worth checking manually
+                                    if (jsonResponse.IndexOf("[") > -1 && jsonResponse.LastIndexOf("]") > -1)
+                                    {
+                                        jsonResponse = jsonResponse.Substring(jsonResponse.IndexOf("["));
+                                        jsonResponse = jsonResponse.Substring(0, jsonResponse.LastIndexOf("]") + 1);
 
-                                // Save the changes immediately.
-                                workbook.Save();
+                                        var results = JArray.Parse(jsonResponse);
+
+                                        // Add the worksheet.
+                                        var worksheet = workbook.Worksheets.Add("Run " + i);
+                                        ConvertToWorksheet(results, worksheet);
+
+                                        // Save the changes immediately.
+                                        workbook.Save();
+
+                                        Console.WriteLine("Successfully added Worksheet: " + "Run " + i);
+                                        Console.WriteLine("Workbook: " + reportScoresFullPath);
+
+                                        // We did something! Flag it.
+                                        if (!anyApiKeyWorks)
+                                        {
+                                            anyApiKeyWorks = true;
+                                            Console.WriteLine("AnyApiKeyWorks new value: " + anyApiKeyWorks);
+                                        }
+                                    }
+                                    else
+                                    {
+                                        Console.WriteLine("Json format issue, no []s found: " + jsonResponse);
+                                    }
+                                }
+                                catch (Exception ex) // set breakpoint here
+                                {
+                                    Console.WriteLine("Exception: " + ex.Message);
+                                }
                             }
-
                         }
+                        // Catch quota ClientErrors
                         catch (ClientError ex) when (ex.StatusCode == 429)
                         {
                             // Specific handling for 429 / Resource Exhausted
                             Console.WriteLine("Resources exhausted for alias: " + aliasEnumerator.Current.Name);
 
-                            // Switch to the next alias/api key
+                            // Switch to the next alias and api key
                             if (!aliasEnumerator.MoveNext())
                             {
+                                // If we reached here, we spent all our quotas, for all our aliases
+                                Console.WriteLine("Exhausted all aliases for the current model: " + modelsEnumerator.Current);
+
+                                // Reset the alias queue back to the first item
                                 aliasEnumerator = aliases.GetEnumerator();
                                 aliasEnumerator.MoveNext();
-                            }
-                            // Take a break between aliases
-                            Thread.Sleep(60000);
 
-                            // take it from the top
-                            goto start;
+                                // Check to see if we did anything with any alias last round
+                                if (!anyApiKeyWorks)
+                                {
+                                    // If all our aliases are exhausted and we didn't do anything last round, change the model.
+                                    if (!modelsEnumerator.MoveNext())
+                                    {
+                                        Console.WriteLine("Exhausted all models, resetting back to first.");
+
+                                        // Round-robin back to the first model in the list
+                                        modelsEnumerator = models.GetEnumerator();
+                                        modelsEnumerator.MoveNext();
+                                    }
+                                    Console.WriteLine("Changed to new model: " + modelsEnumerator.Current);
+                                }
+                                else
+                                {
+                                    // Swapped in a new alias, so haven't done anything yet.
+                                    // Reset the anyApiKeyWorks flag.
+                                    anyApiKeyWorks = false;
+                                    Console.WriteLine("AnyApiKeyWorks new value: " + anyApiKeyWorks);
+                                }
+                            }
+                            else
+                            {
+                                Console.WriteLine("Trying with next alias: " + aliasEnumerator.Current.Name);
+                            }
+
+                            // Take a break between swapping aliases and/or models
+                            Thread.Sleep(sleepInterval);
+
+                            // Take it from the top.
+                            goto restart;
                         }
 
                         // Sleep for a minute to keep TPM down
-                        Thread.Sleep(60000);
+                        Thread.Sleep(sleepInterval);
                     }
+                    #endregion // AssessmentsLoop
 
                     // Delete the report from gemini's cloud
                     await client.Files.DeleteAsync(geminiReportName);
@@ -323,8 +473,10 @@ namespace BulkAssessments
                     File.Move(labReport, processedParentPath + "\\Reports\\" + labPrefix + "\\" + Path.GetFileName(labReport));
 
                     // Sleep for a minute between Reports.
-                    Thread.Sleep(60000);
+                    Thread.Sleep(sleepInterval);
                 }
+
+                #endregion // ReportsLoop
 
                 // No more use for Rubric cloud file, so delete it.
                 // todo: Move Rubrics file to Processed folder
@@ -334,16 +486,16 @@ namespace BulkAssessments
                 File.Move(labRubricFile, processedParentPath + "\\Rubrics\\" + Path.GetFileName(labRubricFile));
 
                 // Also take a breather between Rubrics
-                Thread.Sleep(300000);
+                Thread.Sleep(3 * sleepInterval);
             }
+
+            #endregion // RubricsLoop
+
         }
 
-        public static void ConvertToWorksheet(string jsonResponse, IXLWorksheet worksheet)
+        public static void ConvertToWorksheet(JArray assessmentResults, IXLWorksheet worksheet)
         {
-            jsonResponse = jsonResponse.Substring(jsonResponse.IndexOf("["));
-            jsonResponse = jsonResponse.Substring(0, jsonResponse.LastIndexOf("]") + 1);
 
-            var results = JArray.Parse(jsonResponse);
 
             worksheet.Cell(1, 1).Value = "Rule ID";
             worksheet.Cell(1, 2).Value = "Score";
@@ -351,10 +503,10 @@ namespace BulkAssessments
             worksheet.Cell(1, 4).Value = "Evidence";
 
             var currentRow = 2;
-            foreach (var item in results)
+            foreach (var rule in assessmentResults)
             {
                 int score = 0;
-                JToken? scoreObject = item["Score"];
+                JToken? scoreObject = rule["Score"];
                 if (scoreObject != null)
                 {
                     switch (scoreObject.Type)
@@ -373,10 +525,10 @@ namespace BulkAssessments
                     }
                 }
 
-                worksheet.Cell(currentRow, 1).Value = item["RuleID"]?.ToString() ?? "";
+                worksheet.Cell(currentRow, 1).Value = rule["RuleID"]?.ToString() ?? "";
                 worksheet.Cell(currentRow, 2).Value = score;
-                worksheet.Cell(currentRow, 3).Value = item["RuleName"]?.ToString() ?? "";
-                worksheet.Cell(currentRow, 4).Value = item["Evidence"]?.ToString() ?? "";
+                worksheet.Cell(currentRow, 3).Value = rule["RuleName"]?.ToString() ?? "";
+                worksheet.Cell(currentRow, 4).Value = rule["Evidence"]?.ToString() ?? "";
 
                 currentRow++;
             }
@@ -393,7 +545,7 @@ namespace BulkAssessments
                                     .Trim('-'); // Clean up trailing hyphens
 
             // Must start with "files/"  
-            return $"files/{alias}{sanitized}";
+            return $"files/{alias}-{sanitized}";
         }
 
     }
