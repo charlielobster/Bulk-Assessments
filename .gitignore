@@ -361,9 +361,6 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
-/Data/Reports/Lab 1
-/Data/Scores/Lab 1
-/Data/Reports/Lab 2
-/Data/Processed/Reports/Lab 1
-/Data/Reports/Lab 3
-/Data/Processed/Rubrics
+/Data/Reports
+/Data/Scores
+/Data/Processed
