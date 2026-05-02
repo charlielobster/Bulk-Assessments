@@ -31,7 +31,6 @@ namespace BulkAssessments
         {
             //  Configuration:
             //  Values found in appsettings.json file
-            string geminiModel = "GEMINI MODEL"; // Check available models
             string rubricsPath = "RUBRICS FOLDER PATH";
             string reportsParentPath = "REPORTS PARENT FOLDER PATH";
             string processedParentPath = "PROCESSED PARENT FOLDER PATH";
