@@ -190,29 +190,19 @@ namespace BulkAssessments
                     // Forces the JSON to have these specific keys
                     ResponseSchema = new Schema
                     {
-                        Type = Type.Object,
-                        Properties = new Dictionary<string, Schema>
+                        Type = Type.Array,
+                        Items = new Schema
                         {
+                            Type = Type.Object,
+                            Properties = new Dictionary<string, Schema>
                             {
-                                "audit_results", new Schema
-                                {
-                                    Type = Type.Array,
-                                    Items = new Schema
-                                    {
-                                        Type = Type.Object,
-                                        Properties = new Dictionary<string, Schema>
-                                        {
-                                            { "RuleID", new Schema { Type = Type.String } },
-                                            { "RuleName", new Schema { Type = Type.String } },
-                                            { "Evidence", new Schema { Type = Type.String } },
-                                            { "Score", new Schema { Type = Type.Integer } }
-                                        },
-                                        Required = ["RuleID", "RuleName", "Evidence", "Score" ]
-                                    }
-                                }
-                            }
-                        },
-                        Required = [ "audit_results" ]
+                                { "RuleID", new Schema { Type = Type.String } },
+                                { "RuleName", new Schema { Type = Type.String } },
+                                { "Evidence", new Schema { Type = Type.String } },
+                                { "Score", new Schema { Type = Type.Integer } }
+                            },
+                            Required = ["RuleID", "RuleName", "Evidence", "Score" ]
+                       } 
                     }
                 };
 
