@@ -10,6 +10,9 @@ using Schema = Google.GenAI.Types.Schema;
 using Type = Google.GenAI.Types.Type;
 using Path = System.IO.Path;
 
+// MAJOR TODO: integrate with Brightspace API
+// https://community.d2l.com/brightspace/kb/articles/1102-getting-started-with-brightspace-api-automation
+
 namespace BulkAssessments
 {
     // Alias DTO
