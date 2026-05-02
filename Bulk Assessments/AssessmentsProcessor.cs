@@ -280,7 +280,7 @@ namespace BulkAssessments
                 };
 
                 // Get the Reports Folder for the Lab.
-                var labReports = Directory.GetFiles(reportsParentPath + "\\" + labPrefix);
+                var labReports = Directory.GetFiles(reportsParentPath + labPrefix);
 
                 Console.WriteLine("Found " + labReports.Length + " Lab Reports to assess.");
 
@@ -296,7 +296,7 @@ namespace BulkAssessments
                     var geminiReportName = ToGeminiName(labReport, aliasEnumerator.Current.Name);
 
                     string scoresFileName = Path.GetFileName(labReport);
-                    string reportScoresFullPath = scoresParentPath + "\\" + labPrefix + "\\" +
+                    string reportScoresFullPath = scoresParentPath + labPrefix + "\\" +
                         scoresFileName.Substring(0, scoresFileName.IndexOf(".")) + " Scores.xlsx";
 
                     // Create the Report Scores Workbook now, if it doesn't already exist.
@@ -469,6 +469,7 @@ namespace BulkAssessments
                             }
 
                             // Take a break between swapping aliases and/or models
+                            Console.WriteLine("Sleeping now: " + sleepInterval);
                             Thread.Sleep(sleepInterval);
 
                             // Take it from the top.
@@ -476,6 +477,7 @@ namespace BulkAssessments
                         }
 
                         // Sleep for a minute to keep TPM down
+                        Console.WriteLine("Sleeping now: " + sleepInterval);
                         Thread.Sleep(sleepInterval);
                     }
                     #endregion // AssessmentsLoop
@@ -490,6 +492,7 @@ namespace BulkAssessments
                     File.Move(labReport, processedParentPath + "\\Reports\\" + labPrefix + "\\" + Path.GetFileName(labReport));
 
                     // Sleep for a minute between Reports.
+                    Console.WriteLine("Sleeping now: " + sleepInterval);
                     Thread.Sleep(sleepInterval);
                 }
 
@@ -503,6 +506,7 @@ namespace BulkAssessments
                 File.Move(labRubricFile, processedParentPath + "\\Rubrics\\" + Path.GetFileName(labRubricFile));
 
                 // Also take a breather between Rubrics
+                Console.WriteLine("Sleeping now: " + (3 * sleepInterval));
                 Thread.Sleep(3 * sleepInterval);
             }
 
