@@ -37,8 +37,8 @@ namespace BulkAssessments
             //  For each lab,
             //      Student Reports Folder
             //  Student reports use the convention:
-            //      "(2 or 3 letters upper case) Lab x.pdf"
-            //      (e.g., "AF Lab 6.pdf", "JPL Lab 3.pdf")
+            //      "(2 letters upper case) Lab x.pdf"
+            //      (e.g., "AF Lab 6.pdf", "JP Lab 3.pdf")
             IConfiguration config = new ConfigurationBuilder()
                 .SetBasePath(AppDomain.CurrentDomain.BaseDirectory)
                 .AddJsonFile("appsettings.json")
