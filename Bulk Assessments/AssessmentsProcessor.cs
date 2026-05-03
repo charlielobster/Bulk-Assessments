@@ -130,20 +130,28 @@ namespace BulkAssessments
             Console.WriteLine("--- MAIN LOOP ---");
             Console.WriteLine();
 
-            var client = new Client(apiKey: aliasEnumerator.Current.ApiKey);
-
-            /* // Iterate through and display file details
-            var filesResponse = await client.Files.ListAsync();
-            if (filesResponse != null)
+            /* // Clean up zombie cloud files
+            foreach (var ga in aliases)
             {
-                await foreach (var file in filesResponse)
+                Console.WriteLine("Checking alias: " + ga.Name);
+                var c = new Client(apiKey: ga.ApiKey);
+                var filesResponse = await c.Files.ListAsync();
+                if (filesResponse != null)
                 {
-                    Console.WriteLine($"File Name: {file.DisplayName}");
-                    Console.WriteLine($"File URI: {file.Uri}");
-                    Console.WriteLine($"Mime Type: {file.MimeType}");
-                    Console.WriteLine("----------------------------");
+                    await foreach (var file in filesResponse)
+                    {
+                        if (file != null && file.Name != null)
+                        {
+                            Console.WriteLine("About to delete file: " + file.Name);
+                            await c.Files.DeleteAsync(file.Name);
+                        }
+                    }
                 }
             }*/
+
+            Console.WriteLine("Creating Client for alias: " + aliasEnumerator.Current.Name);
+            Console.WriteLine("ApiKey: " + aliasEnumerator.Current.ApiKey);
+            var client = new Client(apiKey: aliasEnumerator.Current.ApiKey);
 
             // Check available models:
             /*var models = await client.Models.ListAsync();
