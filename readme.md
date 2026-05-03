@@ -12,7 +12,7 @@ For each Report,
 * Create a Score Workbook from an existing Template file. 
 * Collect three assessments, and insert them into the Workbook. 
 
-When complete, remove the Report or Rubrics file from the cloud.
+When complete, remove the Report and Rubrics file from the cloud.
 
 ## TODOs and Nice to Haves
 
