@@ -20,7 +20,7 @@ When complete, remove the Report and Rubrics file from the cloud.
 * Support for slightly older models with higher quotas.
 <br>&emsp;Need to bugfix JSON issues.
 * Brightspace integration
-* Programmatic report anonymization implementation
+* Programmatic anonymization
 
 ## Bugs
 
