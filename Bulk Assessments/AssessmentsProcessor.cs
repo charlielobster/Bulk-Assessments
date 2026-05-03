@@ -439,7 +439,7 @@ namespace BulkAssessments
                             }
                         }
                         // Catch quota ClientErrors
-                        catch (ClientError ex) when (ex.StatusCode == 429)
+                        catch (ClientError ce) when (ce.StatusCode == 429)
                         {
                             // Specific handling for 429 / Resource Exhausted
                             Console.WriteLine();
@@ -498,6 +498,18 @@ namespace BulkAssessments
                             Console.WriteLine();
 
                             // Take it from the top.
+                            goto restart;
+                        }
+                        catch (Exception ex)
+                        {
+                            // note sure what happened here
+                            Console.WriteLine("Caught exception: " + ex.Message);
+
+                            // Take a break between strange errors
+                            Console.WriteLine("Sleeping now: " + sleepInterval);
+                            Thread.Sleep(sleepInterval);
+                            Console.WriteLine();
+
                             goto restart;
                         }
 
