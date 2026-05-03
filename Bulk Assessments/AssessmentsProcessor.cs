@@ -219,6 +219,9 @@ namespace BulkAssessments
 
             foreach (var labRubricsFile in labRubrics)
             {
+                Console.WriteLine();
+                Console.WriteLine("--- RUBRICS PROCESSING ---");
+                Console.WriteLine();
                 Console.WriteLine("Checking Rubric: " + labRubricsFile);
 
                 var labPrefix = Path.GetFileName(labRubricsFile);
@@ -289,6 +292,9 @@ namespace BulkAssessments
                 //  For each student report for that Lab's Reports Folder,
                 foreach (var labReport in labReports)
                 {
+                    Console.WriteLine();
+                    Console.WriteLine("--- REPORT PROCESSING ---");
+                    Console.WriteLine();
                     Console.WriteLine("Assessing Report " + labReport);
 
                     XLWorkbook workbook;
@@ -337,6 +343,10 @@ namespace BulkAssessments
                     //  todo: config settings for run count?
                     for (int i = 1; i < 4; i++)
                     {
+                        Console.WriteLine();
+                        Console.WriteLine("--- REPORT ASSESSMENT ---");
+                        Console.WriteLine();
+
                         // If Worksheet already exists, we already processed this run.
                         if (workbook.Worksheets.FirstOrDefault(ws => ws.Name == "Run " + i) != default)
                         {
@@ -394,7 +404,7 @@ namespace BulkAssessments
                                         workbook.Save();
 
                                         Console.WriteLine("Successfully added Worksheet: " + "Run " + i);
-                                        Console.WriteLine("Workbook: " + reportScoresFullPath);
+                                        Console.WriteLine("Saved Workbook: " + reportScoresFullPath);
 
                                         // We did something! Flag it.
                                         if (!anyApiKeyWorks)
@@ -477,6 +487,7 @@ namespace BulkAssessments
                             // Take a break between swapping aliases and/or models
                             Console.WriteLine("Sleeping now: " + sleepInterval);
                             Thread.Sleep(sleepInterval);
+                            Console.WriteLine();
 
                             // Take it from the top.
                             goto restart;
@@ -485,6 +496,7 @@ namespace BulkAssessments
                         // Sleep for a minute to keep TPM down
                         Console.WriteLine("Sleeping now: " + sleepInterval);
                         Thread.Sleep(sleepInterval);
+                        Console.WriteLine();
                     }
 
                     #endregion // AssessmentsLoop
@@ -511,6 +523,7 @@ namespace BulkAssessments
                     // Sleep for a minute between Reports.
                     Console.WriteLine("Sleeping now: " + sleepInterval);
                     Thread.Sleep(sleepInterval);
+                    Console.WriteLine();
                 }
 
                 #endregion // ReportsLoop
@@ -532,6 +545,7 @@ namespace BulkAssessments
                 // Also take a breather between Rubrics
                 Console.WriteLine("Sleeping now: " + (3 * sleepInterval));
                 Thread.Sleep(3 * sleepInterval);
+                Console.WriteLine();
             }
 
             #endregion // RubricsLoop
