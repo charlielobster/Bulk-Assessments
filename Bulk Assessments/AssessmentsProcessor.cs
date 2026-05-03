@@ -272,7 +272,7 @@ namespace BulkAssessments
                     ResponseMimeType = "application/json",
 
                     // Forces the JSON to have these specific keys
-                    ResponseSchema = new Schema
+                    ResponseJsonSchema = new Schema
                     {
                         Type = Type.Array,
                         Items = new Schema
@@ -447,6 +447,7 @@ namespace BulkAssessments
                             Console.WriteLine();
                             Console.WriteLine("--- RESOURCE EXHAUSTION --");
                             Console.WriteLine();
+
                             Console.WriteLine("Resources exhausted for alias: " + aliasEnumerator.Current.Name);
 
                             // Switch to the next alias and api key
@@ -560,6 +561,12 @@ namespace BulkAssessments
 
             #endregion // RubricsLoop
 
+        }
+
+        public static JObject TryDifferentJsonThings(string maybeValidJsonString)
+        {
+            JObject o = [];
+            return o;
         }
 
         public static void ConvertToWorksheet(JArray assessmentResults, IXLWorksheet worksheet)
