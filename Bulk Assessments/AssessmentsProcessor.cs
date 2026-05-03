@@ -91,6 +91,7 @@ namespace BulkAssessments
             }
 
             #region ConfigurationDump
+
             Console.WriteLine();
             Console.WriteLine("--- CONFIGURATION ---");
             Console.WriteLine();
@@ -122,6 +123,7 @@ namespace BulkAssessments
             Console.WriteLine(assessmentPrompt);
             Console.WriteLine();
             Console.WriteLine();
+
             #endregion
 
         restart:
