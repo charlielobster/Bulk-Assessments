@@ -217,30 +217,30 @@ namespace BulkAssessments
 
             #region RubricsLoop
 
-            foreach (var labRubricFile in labRubrics)
+            foreach (var labRubricsFile in labRubrics)
             {
-                Console.WriteLine("Checking Rubric: " + labRubricFile);
+                Console.WriteLine("Checking Rubric: " + labRubricsFile);
 
-                var labPrefix = Path.GetFileName(labRubricFile);
+                var labPrefix = Path.GetFileName(labRubricsFile);
                 labPrefix = labPrefix.Substring(0, 5);
 
-                string geminiRubricName = ToGeminiName(labRubricFile, aliasEnumerator.Current.Name);
+                string geminiRubricsName = ToGeminiName(labRubricsFile, aliasEnumerator.Current.Name);
                 try
                 {
                     // If the Rubrics file is not already uploaded, upload it now.
-                    Console.WriteLine("Checking for Rubrics file existence on cloud: " + geminiRubricName);
+                    Console.WriteLine("Checking for Rubrics file existence on cloud: " + geminiRubricsName);
 
-                    var foundRubricFile = await client.Files.GetAsync(geminiRubricName);
+                    var foundRubricFile = await client.Files.GetAsync(geminiRubricsName);
                     rubricFileUri = foundRubricFile.Uri;
                 }
                 catch (ClientError e) when (e.Status == "PERMISSION_DENIED")
                 {
                     // Otherwise, create a new version of the Rubrics file in gemini's cloud.
-                    Console.WriteLine("File not found, uploading file: " + geminiRubricName);
+                    Console.WriteLine("File not found, uploading file: " + geminiRubricsName);
 
                     var uploadedRubricFile = await client.Files.UploadAsync(
-                        labRubricFile,
-                        new UploadFileConfig { Name = geminiRubricName, MimeType = "application/pdf" }
+                        labRubricsFile,
+                        new UploadFileConfig { Name = geminiRubricsName, MimeType = "application/pdf" }
                     );
                     rubricFileUri = uploadedRubricFile.Uri;
                 }
@@ -488,14 +488,24 @@ namespace BulkAssessments
                     }
                     #endregion // AssessmentsLoop
 
+                    Console.WriteLine();
+                    Console.WriteLine("--- REPORT FILE CLEAN-UP ---");
+                    Console.WriteLine();
+
                     // Delete the report from gemini's cloud
+                    Console.WriteLine("Deleting Report file from cloud: " + geminiReportName);
                     await client.Files.DeleteAsync(geminiReportName);
 
                     // Move the Report to the Processed Folder
-                    if (!Directory.Exists(processedParentPath + "\\Reports\\" + labPrefix)) {
-                        Directory.CreateDirectory(processedParentPath + "\\Reports\\" + labPrefix);
+                    if (!Directory.Exists(processedParentPath + "Reports\\" + labPrefix)) {
+
+                        Console.WriteLine("Creating new folder: " + processedParentPath + "Reports\\" + labPrefix);
+                        Directory.CreateDirectory(processedParentPath + "Reports\\" + labPrefix);
                     }
-                    File.Move(labReport, processedParentPath + "\\Reports\\" + labPrefix + "\\" + Path.GetFileName(labReport));
+
+                    Console.WriteLine("Moving to Processed folder - Report file: " + labReport);
+                    Console.WriteLine("New Location: " + processedParentPath + "Reports\\" + labPrefix + "\\" + Path.GetFileName(labReport));
+                    File.Move(labReport, processedParentPath + "Reports\\" + labPrefix + "\\" + Path.GetFileName(labReport));
 
                     // Sleep for a minute between Reports.
                     Console.WriteLine("Sleeping now: " + sleepInterval);
@@ -504,12 +514,20 @@ namespace BulkAssessments
 
                 #endregion // ReportsLoop
 
+
+                Console.WriteLine();
+                Console.WriteLine("--- RUBRICS FILE CLEAN-UP ---");
+                Console.WriteLine();
+
                 // No more use for Rubric cloud file, so delete it.
                 // todo: Move Rubrics file to Processed folder
-                await client.Files.DeleteAsync(geminiRubricName);
+                Console.WriteLine("Deleting Rubrics file from cloud: " + geminiRubricsName);
+                await client.Files.DeleteAsync(geminiRubricsName);
 
                 // Move the Rubrics to the Processed folder.
-                File.Move(labRubricFile, processedParentPath + "\\Rubrics\\" + Path.GetFileName(labRubricFile));
+                Console.WriteLine("Moving to Processed folder - Report file: " + labRubricsFile);
+                Console.WriteLine("New Location: " + processedParentPath + "\\Rubrics\\" + Path.GetFileName(labRubricsFile));
+                File.Move(labRubricsFile, processedParentPath + "\\Rubrics\\" + Path.GetFileName(labRubricsFile));
 
                 // Also take a breather between Rubrics
                 Console.WriteLine("Sleeping now: " + (3 * sleepInterval));
