@@ -486,6 +486,7 @@ namespace BulkAssessments
                         Console.WriteLine("Sleeping now: " + sleepInterval);
                         Thread.Sleep(sleepInterval);
                     }
+
                     #endregion // AssessmentsLoop
 
                     Console.WriteLine();
@@ -513,7 +514,6 @@ namespace BulkAssessments
                 }
 
                 #endregion // ReportsLoop
-
 
                 Console.WriteLine();
                 Console.WriteLine("--- RUBRICS FILE CLEAN-UP ---");
