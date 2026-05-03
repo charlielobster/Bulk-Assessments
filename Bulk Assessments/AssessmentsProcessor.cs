@@ -496,7 +496,8 @@ namespace BulkAssessments
                             }
 
                             // Take a break between swapping aliases and/or models
-                            Console.WriteLine("Sleeping now: " + sleepInterval);
+                            Console.WriteLine("Sleeping now: " + sleepInterval + " ms");
+                            Console.WriteLine(DateTime.Now);
                             Thread.Sleep(sleepInterval);
                             Console.WriteLine();
 
@@ -505,7 +506,8 @@ namespace BulkAssessments
                         }
 
                         // Sleep for a minute to keep TPM down
-                        Console.WriteLine("Sleeping now: " + sleepInterval);
+                        Console.WriteLine("Sleeping now: " + sleepInterval + " ms");
+                        Console.WriteLine(DateTime.Now);
                         Thread.Sleep(sleepInterval);
                         Console.WriteLine();
                     }
@@ -532,7 +534,8 @@ namespace BulkAssessments
                     File.Move(labReport, processedParentPath + "Reports\\" + labPrefix + "\\" + Path.GetFileName(labReport));
 
                     // Sleep for a minute between Reports.
-                    Console.WriteLine("Sleeping now: " + sleepInterval);
+                    Console.WriteLine("Sleeping now: " + sleepInterval + " ms");
+                    Console.WriteLine(DateTime.Now);
                     Thread.Sleep(sleepInterval);
                     Console.WriteLine();
                 }
@@ -554,7 +557,8 @@ namespace BulkAssessments
                 File.Move(labRubricsFile, processedParentPath + "\\Rubrics\\" + Path.GetFileName(labRubricsFile));
 
                 // Also take a breather between Rubrics
-                Console.WriteLine("Sleeping now: " + (3 * sleepInterval));
+                Console.WriteLine("Sleeping now: " + (3 * sleepInterval) + " ms");
+                Console.WriteLine(DateTime.Now);
                 Thread.Sleep(3 * sleepInterval);
                 Console.WriteLine();
             }
