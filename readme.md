@@ -16,7 +16,7 @@ When complete, remove the Report and Rubrics file from the cloud.
 
 ## TODOs and Nice to Haves
 
-* Wants to be a Windows Service
+* Good candidate for a Windows Service
 * Support for older models with higher quotas.
 <br>&emsp;Getting similar results, but need to bugfix JSON issues.
 * Brightspace integration
