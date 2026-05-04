@@ -132,7 +132,7 @@ namespace BulkAssessments
             Console.WriteLine("--- MAIN LOOP ---");
             Console.WriteLine();
 
-            /* // Clean up zombie cloud files
+             /* // Clean up zombie cloud files
             foreach (var ga in aliases)
             {
                 Console.WriteLine("Checking alias: " + ga.Name);
@@ -442,7 +442,7 @@ namespace BulkAssessments
                         }
                         // Catch quota ClientErrors and timeout Exceptions
                         catch (Exception ex) 
-                            when (ex is TaskCanceledException || 
+                            when (ex is ServerError || ex is TaskCanceledException || 
                                 (ex is ClientError error && error.StatusCode == 429))
                         {
                             // Specific handling for 429 / Resource Exhausted
