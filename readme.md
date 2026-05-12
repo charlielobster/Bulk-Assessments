@@ -1,6 +1,6 @@
 # Bulk Assessments
 
-Fault-tolerant C# wrappers around a script of transactions with Gemini Flash AI Models, using the Google.GenAI namespaces. Extra-slow implementation, copious use of time delays. Detailed Console logging. 
+Fault-tolerant C# wrappers around transactions with Gemini Flash AI Models, using the Google.GenAI namespaces. Extra-slow implementation, copious use of time delays. Detailed Console logging. 
 
 To handle quota exhaustion, it uses two round-robin queues for API Keys/Gemini Aliases and Models, respectively. Exhausts all API Keys/Alaises first, followed by Models.
 
