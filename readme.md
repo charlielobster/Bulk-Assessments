@@ -28,3 +28,16 @@ When complete, remove the Report and Rubrics file from the cloud.
 <br>&emsp;Sometimes creates schema for returned objects, especially using older models. 
 * Special case exception handling 
 <br>&emsp;(see code for breakpoint suggestion)
+
+# Sql Scripts
+
+Create the following database schema in Sql Server Management Studio
+
+<img src="Sql Scripts/DatabaseDiagram.png">
+
+This includes views for finding rule confidences, lab scores broken down by various categories, etc.
+
+# Parse Scores Into Database
+
+A C# Parser takes incoming legacy files, Rubrics PDF and LaTeX files, along with student scores files, and loads everything into the aforementioned database.
+
