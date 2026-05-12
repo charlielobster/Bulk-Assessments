@@ -1,0 +1,156 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage{geometry}
+\usepackage{enumitem}
+\usepackage{amsmath}
+\usepackage{tikz}
+\usetikzlibrary{shapes.geometric}
+
+\newcommand{ \stopsign } {
+\begin{tikzpicture}[baseline=(stop.base)]
+    \node[draw=white, double=red, double distance=2pt, fill=red, 
+          regular polygon, regular polygon sides=8, inner sep=2pt] (stop) 
+          {\textcolor{white}{\textbf{\textsf{!}}}};
+\end{tikzpicture}
+}
+
+\begin{document}
+\pagestyle{empty}
+
+\title{Lab 1 (Measurements) Rubrics}
+% \maketitle
+
+\section*{Core Lab Rubrics (2 Rubrics)}
+% 3 + 13 = 16 Rules Across 2 Rubrics
+
+\subsection*{Format Compliance Rubric (3 Rules)}
+\begin{itemize}
+\item \textbf{ [FC-01] Formatting Mechanics } – Writing, spelling, and grammar must be at university levels. Report is organized and has appropriate header structure. Must be typed.
+\item \textbf{ [FC-02] No Handwritten Documents } - Including embedded images of handwritten documents.
+\item \textbf{ [FC-03] Forbidden Phrase } – Reports are forbidden from using the phrase "\textbf{human error}". 
+\end{itemize}
+
+\subsection*{Lab Report Rubric (13 Rules)}
+\begin{itemize}
+\item \textbf{ [LR-01] Introduction: Provide a Description } –  Describe the main experimental idea in your own words.
+\item \textbf{ [LR-02] Introduction:  Explain How Topics Relate } – Tie the lab to the everyday world or a particular scientific application.
+\item \textbf{ [LR-03] Procedure: Include Accurate Description } – Explain each of the experimental steps performed.
+\item \textbf{ [LR-04] Data: Tables, Graphs, and Plots Included }
+\item \textbf{ [LR-05] Data:  Graphs, and Plots Have Axes }
+\item \textbf{ [LR-06] Data: Graphs, and Plots Have Correct Units }
+\item \textbf{ [LR-07] Data: Tables, Graphs, and Plots Have Titles } – e.g., Title: Distance (m) vs. Time (sec).
+\item \textbf{ [LR-08] Questions:  Answer all Questions } 
+\item \textbf{ [LR-09] Questions:  Provide Clear Responses } – Provide specific justifications for each answer.
+\item \textbf{ [LR-10] Conclusion:  Summarize Results }
+\item \textbf{ [LR-11] Conclusion:  Include Specific Sources of Error }
+\item \textbf{ [LR-12] Conclusion:  Suggest Improvements }
+\item \textbf{ [LR-13] Graph Formal Mathematical Notation Included } –  The report includes some mathematical expression using LaTeX, special characters, or use of an equation editor. 
+\end{itemize}
+
+\section*{Lab 1 (Measurements) Rubrics (6 Rubrics)}
+% 3 + 4 + 2 + 4 + 3 + 2 = 18 Rules Across 6 Rubrics
+
+\subsection*{Preliminary Experiments Rubric (3 Rules)}
+\begin{itemize}
+\item \textbf{ [PE-01] Exercise 1 } –  Head Circumference –  Value recorded in cm; realistic for a human head (approx. 50–60 cm).
+\item \textbf{ [PE-02] Time Between Heartbeats } –  Value recorded in seconds (not bpm); realistic (approx. 0.6–1.2 s).
+\item \textbf{ [PE-03] Equipment Check } –  Implied completion by the successful execution of all subsequent tasks.
+\end{itemize}
+
+\subsection*{Circle Experiment Rubric (4 Rules)}
+\begin{itemize}
+\item \textbf{ [CE-01] Data Collection } –  Table completed with measurements for 3 circular objects, including diameter and circumference.
+\item \textbf{ [CE-02] Excel Analysis } –  Scatter plot generated with a linear trend-line; slope is identified as the estimate for $\pi$.
+\item \textbf{ [CE-03] Methods 2 \& 3 } –  $\pi$ estimates provided for both the toothpick method and the Google Maps feature measurement.
+\item \textbf{ [CE-04] Report Question } –  Critical discussion of limitations (e.g., measurement precision, parallax error) and identification of the most/least accurate method.
+\end{itemize}
+
+\subsection*{Uncertain Fish Rubric (2 Rules)}
+\begin{itemize}
+\item \textbf{ [UF-01] Fish Measurement } –  Length of the paper fish recorded in cm.
+\item \textbf{ [UF-02] Uncertainty Calculation } –  Correct application of the "half the smallest spacing" rule ($ 0.5/2 = .25 $) and reporting the value in the format  $ x \pm 0.25 $ cm.
+\end{itemize}
+
+\subsection*{Wood Density Rubric (4 Rules)}
+\begin{itemize}
+\item \textbf{ [DW-01] Measurements } –  Three dimensions (using calipers/meter stick) and mass (using digital scale) recorded.
+\item \textbf{ [DW-02] Density Calculation } –  Correct use of $ \rho = \frac {m}{V} $ with units in $ \frac { g }{ cm^3 } $.
+\item \textbf{ [DW-03] Report Question } –  Uncertainty –  Demonstration of algebraic error propagation for the density measurement.
+\item \textbf{ [DW-04] Report Question } –  Identification –  Comparison of measured density against a database to identify the wood type.
+\end{itemize}
+
+\subsection*{Pendulum Experiment Rubric (3 Rules)}
+\begin{itemize}
+\item \textbf{ [PF-01] Data Collection } –  5 different lengths (10 cm to 1.5 m) and corresponding periods recorded.
+\item \textbf{ [PF-02] Excel Analysis } –  Plot of period ($ T $) vs. length ($ L $).
+\item \textbf{ [PF-03] Report Question } –  Correct observation of functional dependence (e.g., non-linear/square root) and suggestions for improvement.
+\end{itemize}
+
+\subsection*{Final Analysis Rubric (2 Rules)}
+\begin{itemize}
+\item \textbf{ [FA-01] Scatter Plot } –  Comparison of class-wide head size vs. heartbeat time.
+\item \textbf{ [FA-02] Report Question } –  Insightful discussion on why a correlation between head size and heartbeat is or is not expected.
+\end{itemize}
+
+\section*{Bonus Rubrics (3 Rubrics)}
+% 14 + 9 + 13 = 36 Rules Across 3 Rubrics
+
+\subsection*{Uncertainty Rubric (14 Rules)}
+\begin{itemize}
+\item \textbf{ [UR-01] Completeness } – Every measurement result must be accompanied by a quantitative statement of its uncertainty to be considered complete.
+\item \textbf{ [UR-02] Purpose Validation } – Uncertainty must be used as the primary metric to decide if a result is adequate for its intended purpose.
+\item \textbf{ [UR-03] Consistency Verification } – Calculated values must be compared against text values to determine if the difference is consistent with the measurement uncertainty.
+\item \textbf{ [UR-04] Percentage Uncertainty } – The ratio between a measurement's uncertainty and its value is calculated using the formula: $( \frac{\delta x}{|x|} ) \times 100\%$
+\item \textbf{ [UR-05] Additive Propagation } – When adding two measurements, the final uncertainty must be the sum of their absolute uncertainties: $ (A \pm \delta A) + (B \pm \delta B) = (A + B) \pm (\delta A + \delta B) $
+\item \textbf{ [UR-06] Subtractive Propagation } – Similar to addition, when subtracting two measurements, the final uncertainty must be the difference of their absolute uncertainties: $ (A \pm \delta A) - (B \pm \delta B) = (A - B) \pm (\delta A + \delta B) $
+\item \textbf{ [UR-07] Multiplicative Propagation } – For multiplication, the uncertainty must be calculated using the fractional sum: $ (A \pm \delta A) \times (B \pm \delta B) = (AB) \left[ 1 \pm \left( \frac{\delta A}{A} + \frac{\delta B}{B} \right) \right] $
+\item \textbf{ [UR-08] Divisive Propagation } – Similar to multiplication,  the quotient must be calculated using the fractional sum: $ \frac{(A \pm \delta A)}{(B \pm \delta B)} = \left( \frac{A}{B} \right) \left[ 1 \pm \left( \frac{\delta A}{A} + \frac{\delta B}{B} \right) \right] $
+\item \textbf{ [UR-09] Constant Scaling } – When multiplying by a constant, the absolute uncertainty must also be multiplied by that constant: $ k \times (A \pm \delta A) = [kA \pm k\delta A] $
+\item \textbf{ [UR-10] Square Root Calculation } – The uncertainty of a square root must be determined using the formula: $ \sqrt{(A \pm \delta A)} = \left( \sqrt{A} \pm \frac{\delta A}{2\sqrt{A}} \right) $
+\item \textbf{ [UR-11] Trigonometric Uncertainty } – For functions like, uncertainty must be found by calculating the difference between the mean result and the result using the value plus its uncertainty: $ \theta \pm \delta \theta = tan^{-1}\ \{ \frac {A \pm \delta A}{B \pm \delta B}\ \} = tan^{-1} \{  \left( \frac{A}{B} \right) \left[ 1 \pm \left( \frac{\delta A}{A} + \frac{\delta B}{B} \right) \right]  \} $
+\item \textbf{ [UR-12] Small Angle Approximation } – If an angle $\theta$ is near zero, the uncertainty in the ratio can be treated as the uncertainty of the angle measurement in radians: $ \theta \pm \delta \theta \approx sin( \theta \pm \delta \theta) = \frac { A \pm \delta A } { B \pm \delta B } $
+\item \textbf{ [UR-13] Statistical Standard Deviation } – Report contains the standard deviation of individual measurements: $ \sigma_x = \sqrt{\frac{1}{N-1} \sum_{i=1}^{N} (x_i - \bar{x})^2} $ 
+\item \textbf{ [UR-14] Statistical Mean Uncertainty } – For repeated measurements, reports contain the uncertainty of the mean, calculated as the standard deviation of the mean: $ \sigma_{ \bar{x} } = \frac{\sigma_x}{\sqrt{N}} $
+\end{itemize}
+
+\subsection*{Scientific Reporting Rubric (9 Rules)}
+\begin{itemize}
+\item \textbf{ [SR-01] Methodological Precision } – Limitations in tools and methods must be accounted for when reporting scientific information.
+\item \textbf{ [SR-02] Error Acknowledgment } – The report states that no measurement is perfect and that experimental error is inherent to the process.
+\item \textbf{ [SR-03] Include Uncertainty ( ± $ \delta x $) } – Measurements from the lab must be reported with a plus or minus attached to them to account for the range of possible values in the specific mathematical format: \textit{Measurement} ± $ \delta x $.
+\item \textbf{ [SR-04] Apply Significant Figures } - Care must be taken to report measurements with the proper number of significant figures to avoid reporting "information that we don't know".
+\item \textbf{ [SR-05] Least Precise Input Rule } – In calculations, the final answer must be limited to the number of significant figures of the least precise measurement used (e.g., if one value has only 2 significant figures and all the other measurements have more than 2, the result must have 2).
+\item \textbf{ [SR-06] Calculator Precision } - The resulting values must be rounded to the correct number of significant figures rather than reporting the full calculator output (e.g., 0.8313995 becomes 0.814). 
+\item \textbf{ [SR-07] Deterministic Rounding } – When rounding to the correct number of significant figures, the final digit must be adjusted according to the standard rounding rules to reflect the most accurate and correct significant figures.
+\item \textbf{ [SR-08] Unit Inclusion } – All reported measurements and results must include their corresponding scientific units (e.g. s, m, miles).
+\item \textbf{ [SR-09] Honest Reporting } – To be considered "scientifically honest", results must not be reported as exact integers if there is any possibility of a range; for example, a "guess" of 19 must include its likely variance (e.g., 19 ± 1 secs).
+\end{itemize}
+
+\subsection*{Data and Graphs Rubric (13 Rules)}
+\begin{itemize}
+\item \textbf{ [DG-01] Prioritize Visual Plots } – Data must be presented as a plot or a graph rather than just a table to ensure rapid and clear communication of the science.
+\item \textbf{ [DG-02] Proper Axis Assignment } – The horizontal axis must represent the independent variable (e.g., time), while the vertical axis represents the dependent variable (e.g., height).
+\item \textbf{ [DG-03] Axis Labeling } – Plots and graphs must include clearly labeled axes that define the variables being measured (e.g., Time in days vs. Height in mm).
+\item \textbf{ [DG-04] Explicit Unit Labeling } – All axes must be labeled with their corresponding units of measurement (e.g., $days, mm, W, A$).
+\item \textbf{ [DG-05] Preliminary Relation Identification } – A visual assessment must be made to determine if the data shows a linear relation ($y=mx$) or a non-linear one.
+\item \textbf{ [DG-06] Slope Interpretation } – The slope of a linear fit must be interpreted in the context of the physical measurements, such as growth rate in mm/day
+\item \textbf{ [DG-07] Trend-line Accuracy } – Using software, a "fit" line must be generated that attempts to go as close to every individual data point as possible.
+\item \textbf{ [DG-08] Display the Fit Equation } – The specific mathematical equation reported by the fitting software (e.g., $y=7.1974x$) must be displayed on the plot.
+\item \textbf{ [DG-09] Contextual Slope Interpretation } – The slope must be extracted from the equation and interpreted within the context of the physical measurement (e.g., a growth rate of ~7 mm/day) .
+\item \textbf{ [DG-10] Visual Fit Validation } – A visual inspection must be conducted to confirm if the chosen fit (e.g., linear) is a "good choice" for the raw data provided.
+\item \textbf{ [DG-11] Quadratic Modeling } – For non-linear, concave-down data, a quadratic fit ( e.g.,$y=mx^2$) must be applied to identify higher-order coefficients.
+\item \textbf{ [DG-12] Linearization Strategy } – For complex or "exotic" functions, a variable substitution (e.g., $z=x^2$ or $z=cos(x)$) must be used to create a linear relationship to solve for m.
+\item \textbf{ [DG-13] Extrapolate Coefficients } – Use the slope of a linearized plot to extrapolate specific physical coefficients, such as the 2nd order coefficient in power calculations.
+\end{itemize}
+
+\section*{\stopsign Rules for the AI:}
+\begin{itemize}
+\item \textbf{ Verify Exact Rule Registry Manifest } - (Totaling (3 + 13) + (3 + 4 + 2 + 4 + 3 + 2) + (14 + 9 + 13) = 70 Rules Across 11 Rubrics)
+\item \textbf{ Never Group Categories } –  If the Rubric lists ``Proper Axis Assignment'' and ``Axis Labeling'' separately, they must remain separate in the audit.
+\item \textbf{ Match Exact Names }  – Use the  Rule Name exactly as it appears in the PDF.
+\item \textbf{ Point-Mirroring } – Assign exactly 1 point for each Rule and every Rubric, with the exception of the Format Compliance Rubric, which is assigned as either Pass or Fail.
+\item \textbf{ Enforce Input Anonymity } – If the report contains any PII, alert the user and refuse to assess the input. 
+\end{itemize}
+
+\end{document}
+

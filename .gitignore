@@ -364,3 +364,5 @@ FodyWeavers.xsd
 /Data/Reports
 /Data/Scores*
 /Data/Processed
+/Data/DB/
+/Sql Scripts/Temp

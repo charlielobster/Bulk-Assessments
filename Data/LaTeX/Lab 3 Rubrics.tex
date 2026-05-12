@@ -1,0 +1,191 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage{geometry}
+\usepackage{enumitem}
+\usepackage{amsmath}
+\usepackage{tikz}
+\usetikzlibrary{shapes.geometric}
+
+\newcommand{ \stopsign } {
+\begin{tikzpicture}[baseline=(stop.base)]
+    \node[draw=white, double=red, double distance=2pt, fill=red, 
+          regular polygon, regular polygon sides=8, inner sep=2pt] (stop) 
+          {\textcolor{white}{\textbf{\textsf{!}}}};
+\end{tikzpicture}
+}
+
+\begin{document}
+\pagestyle{empty}
+
+\title{Lab 3 (Little g) Rubrics}
+% \maketitle
+
+\section*{Core Lab Rubrics (2 Rubrics)}
+% 3 + 13 = 16 Rules Across 2 Rubrics
+
+\subsection*{Format Compliance Rubric (3 Rules)}
+\begin{itemize}
+\item \textbf{ [FC-01] Formatting Mechanics } – Writing, spelling, and grammar must be at university levels. Report is organized and has appropriate header structure. Must be typed.
+\item \textbf{ [FC-02] No Handwritten Documents } - Including embedded images of handwritten documents.
+\item \textbf{ [FC-03] Forbidden Phrase } – Reports are forbidden from using the phrase "\textbf{human error}". 
+\end{itemize}
+
+\subsection*{Lab Report Rubric (13 Rules)}
+\begin{itemize}
+\item \textbf{ [LR-01] Introduction: Provide a Description } –  Describe the main experimental idea in your own words.
+\item \textbf{ [LR-02] Introduction:  Explain How Topics Relate } – Tie the lab to the everyday world or a particular scientific application.
+\item \textbf{ [LR-03] Procedure: Include Accurate Description } – Explain each of the experimental steps performed.
+\item \textbf{ [LR-04] Data: Tables, Graphs, and Plots Included }
+\item \textbf{ [LR-05] Data:  Graphs, and Plots Have Axes }
+\item \textbf{ [LR-06] Data: Graphs, and Plots Have Correct Units }
+\item \textbf{ [LR-07] Data: Tables, Graphs, and Plots Have Titles } – e.g., Title: Distance (m) vs. Time (sec).
+\item \textbf{ [LR-08] Questions:  Answer all Questions } 
+\item \textbf{ [LR-09] Questions:  Provide Clear Responses } – Provide specific justifications for each answer.
+\item \textbf{ [LR-10] Conclusion:  Summarize Results }
+\item \textbf{ [LR-11] Conclusion:  Include Specific Sources of Error }
+\item \textbf{ [LR-12] Conclusion:  Suggest Improvements }
+\item \textbf{ [LR-13] Graph Formal Mathematical Notation Included } –  The report includes some mathematical expression using LaTeX, special characters, or use of an equation editor. 
+\end{itemize}
+
+\section*{Lab 3 (Little g) Rubrics (8 Rubrics)}
+% 5 + 6 + 3 + 6 + 7 + 6 + 7 + 4 = 44 Rules Across 8 Rubrics
+
+\subsection*{Data and Measurements Rubric (5 Rules)}
+\begin{itemize}
+\item \textbf{ [DM-01] Rough Measurement } - Three independent trials of a 1-meter drop recorded; average calculated correctly.
+\item \textbf{ [DM-02] Slo-mo Free Fall } - Recorded distance (cm converted to m) and time (from 60 fps video) used to calculate $g$ via $ \Delta y = -\frac{1}{2} g t^2 $.
+\item \textbf{ [DM-03] Inclined Plane Leveling } - Documentation of the leveling process ($ a = 0 $) and recording of the specific angle $ \theta $ where the cart begins to move).
+\item \textbf{ [DM-04] Rolling Cart: Angles } - Table of three distinct angles calculated using $ \theta = \sin^{-1} \left( \frac{h}{L} \right) $ and corresponding acceleration values.
+\item \textbf{ [DM-05] Rolling Cart: Masses } - Comparative data for the cart alone versus the cart with the added 500g hex-head mass.
+\end{itemize}
+
+\subsection*{Questions and Analysis Rubric (6 Rules)}
+\begin{itemize}
+\item \textbf{ [QA-01] - Limitations } - Identifies human reaction time and the small $ \Delta t $ of a 1m fall as primary sources of error (p. 2).
+\item \textbf{ [QA-02] - Uncertainty } - Performs uncertainty analysis on the angle measurement; explains that static friction keeps the car still at near-zero angles (p. 3).
+\item \textbf{ [QA-03] - Friction Coefficient } - Estimates $ \mu $ (static or rolling) based on the angle where the cart first overcame inertia (p. 3).
+\item \textbf{ [QA-04] - Kinematic Analysis } - Uses Excel or similar tool (e.g.: Matlab) to derive $ v(t) $ from position data; calculates $ g $ using the slope ($ a $) and the relationship $ a = g \sin \theta $.
+\item \textbf{ [QA-05] - Mass Claim } - Provides a clear claim on whether mass affects $ a $; cites kinematic theory ($ a = gsin(\theta) $) to support findings.
+\item \textbf{ [QA-06] - Discrepancies } - Analyzes class-wide data; attributes variations to frame-selection errors or parallax in reading the scale).
+\end{itemize}
+
+\subsection*{Deductions and Requirements Rubric (3 Rules)}
+\begin{itemize}
+\item \textbf{ [DR-01] Units } - Missing or incorrect units for acceleration ($ m/s^2 $), height ( $ m $
+), or time ($ s $).
+\item \textbf{ [DR-02] Significant Figures } - Failure to maintain appropriate precision (e.g., claiming 6 decimal places for a stopwatch measurement).
+\item \textbf{ [DR-03] Graphing } - Missing titles, axis labels, or linear fit equations on the Velocity vs. Time plots.
+\end{itemize}
+
+\subsection*{Experiment 1: Rough Measurement Rubric (6 Rules)}
+\begin{itemize}
+\item \textbf{ [RM-01] Three Trials } - Records three individual trials for acceleration due to gravity ($g$) with units ($m/s^2$).
+\item \textbf{ [RM-02] Average } - Correctly calculates the average of the three manual trials.
+\item \textbf{ [RM-03] } - Did the student record three distinct trials for the 1-meter wooden block drop?
+\item \textbf{ [RM-04] Correct Calculation } - Is the average of the three measurements calculated correctly using $\Delta y = -\frac{1}{2}gt^2$?
+\item \textbf{ [RM-05] Report Question 1a } - Provides a critical analysis of limitations, specifically highlighting human reaction time and the difficulty of timing short distances ($1$ m).
+\item \textbf{ [RM-06] Report Question 1b } - Does the student identify specific limitations such as human reaction time, air resistance, or the short duration of the fall?
+\end{itemize}
+
+\subsection*{Experiment 2: Slo-Mo Free Fall Rubric (7 Rules)}
+\begin{itemize}
+\item \textbf{ [SF-01] } - Documents the chosen distance and time intervals derived from the 60 fps video.
+\item \textbf{ [SF-02] } - Calculates $g$ using the kinematic equation $\Delta y = \frac{1}{2}gt^2$.
+\item \textbf{ [SF-03] } - Did the student choose a specific time interval and distance from the 60 fps video?
+\item \textbf{ [SF-04] } - Is the calculated value for $g$ based on the video analysis provided with units ($m/s^2$)?
+\item \textbf{ [SF-05] } - Is there a qualitative discussion on why different groups might reach different results despite using the same video data?    
+\item \textbf{ [SF-06] Report Question 6a} - Analyzes discrepancies between group results, citing variables like frame selection and measurement precision.
+\item \textbf{ [SF-07] Report Question 6b} - Does the student calculate the class average for $g$ from the provided table?
+\end{itemize}
+
+\subsection*{Experiment 3: Ramp Leveling Rubric (6 Rules)}
+\begin{itemize}
+\item \textbf{ [RL-01] } - Records the precise angle $\theta$ where the cart overcomes static friction to begin moving.
+\item \textbf{ [RL-02] } - Did the student use the correct trigonometric relationship $\theta = \sin^{-1}(\frac{h}{L})$ where $L = 1.22$ m?
+\item \textbf{ [RL-03] Report Question 2a } - Performs uncertainty analysis on the track angle $\theta$ and explains why the cart remains stationary at near-zero angles.    
+\item \textbf{ [RL-04] Report Question 2b } - Does the explanation account for why the car stands still at small angles (e.g., static friction or measurement uncertainty)?
+\item \textbf{ [RL-05] Report Question 3a } - Is there a calculated estimate for the static or rolling friction coefficient based on the angle where movement begins?
+\item \textbf{ [RL-06] Report Question 3b } - Correctly estimates the static or rolling friction coefficient based on the angle of initial motion.
+\end{itemize}
+
+\subsection*{Experiment 4: Cart Angles Rubric (7 Rules)}
+\begin{itemize}
+\item \textbf{ [CA-01] } - Successfully acquires and imports position-time data into Excel for three distinct ramp angles.
+\item \textbf{ [CA-02] } - Generates a velocity-time graph; extracts acceleration ($a$) from the slope of the linear fit ($v(t) = v_0 + at$).
+\item \textbf{ [CA-03] } - Were three distinct angles recorded?
+\item \textbf{ [CA-04] } - Is the acceleration ($a$) determined from the slope of the $v(t)$ graph?
+\item \textbf{ [CA-05] } - Is the value of $g$ correctly isolated using the relationship $a = g \sin\theta$?    
+\item \textbf{ [CA-06] Report Question 4a } - Did the student import data to Excel to create velocity vs. time graphs?
+\item \textbf{ [CA-07] Report Question 4b } - Solves for $g$ using the relationship $a = g \sin \theta$ for each trial and discusses the consistency of the results.
+\end{itemize}
+
+\subsection*{Experiment 5: Cart Masses Rubric (4 Rules)}
+\begin{itemize}
+\item \textbf{ [CM-01] Acceleration Measurements } - Measures the acceleration of the cart both with and without the additional 500g mass.
+\item \textbf{ [CM-02] Claim Supported by Theory } - Is there a claim made regarding whether mass affects acceleration, supported by kinematic theory ($a = g \sin\theta$ being mass-independent)?    
+\item \textbf{ [CM-03] Report Question 5a } - Does the student compare the acceleration of the cart with and without the extra mass?
+\item \textbf{ [CM-04] Report Question 5b } - Makes a definitive claim on whether mass affects acceleration, justifying the answer using kinematic theory (where $a$ is independent of mass).
+\end{itemize}
+
+\section*{Bonus Rubrics (3 Rubrics)}
+% 14 + 9 + 13 = 36 Rules Across 3 Rubrics
+
+\subsection*{Uncertainty Rubric (14 Rules)}
+\begin{itemize}
+\item \textbf{ [UR-01] Completeness } – Every measurement result must be accompanied by a quantitative statement of its uncertainty to be considered complete.
+\item \textbf{ [UR-02] Purpose Validation } – Uncertainty must be used as the primary metric to decide if a result is adequate for its intended purpose.
+\item \textbf{ [UR-03] Consistency Verification } – Calculated values must be compared against text values to determine if the difference is consistent with the measurement uncertainty.
+\item \textbf{ [UR-04] Percentage Uncertainty } – The ratio between a measurement's uncertainty and its value is calculated using the formula: $( \frac{\delta x}{|x|} ) \times 100\%$
+\item \textbf{ [UR-05] Additive Propagation } – When adding two measurements, the final uncertainty must be the sum of their absolute uncertainties: $ (A \pm \delta A) + (B \pm \delta B) = (A + B) \pm (\delta A + \delta B) $
+\item \textbf{ [UR-06] Subtractive Propagation } – Similar to addition, when subtracting two measurements, the final uncertainty must be the difference of their absolute uncertainties: $ (A \pm \delta A) - (B \pm \delta B) = (A - B) \pm (\delta A + \delta B) $
+\item \textbf{ [UR-07] Multiplicative Propagation } – For multiplication, the uncertainty must be calculated using the fractional sum: $ (A \pm \delta A) \times (B \pm \delta B) = (AB) \left[ 1 \pm \left( \frac{\delta A}{A} + \frac{\delta B}{B} \right) \right] $
+\item \textbf{ [UR-08] Divisive Propagation } – Similar to multiplication,  the quotient must be calculated using the fractional sum: $ \frac{(A \pm \delta A)}{(B \pm \delta B)} = \left( \frac{A}{B} \right) \left[ 1 \pm \left( \frac{\delta A}{A} + \frac{\delta B}{B} \right) \right] $
+\item \textbf{ [UR-09] Constant Scaling } – When multiplying by a constant, the absolute uncertainty must also be multiplied by that constant: $ k \times (A \pm \delta A) = [kA \pm k\delta A] $
+\item \textbf{ [UR-10] Square Root Calculation } – The uncertainty of a square root must be determined using the formula: $ \sqrt{(A \pm \delta A)} = \left( \sqrt{A} \pm \frac{\delta A}{2\sqrt{A}} \right) $
+\item \textbf{ [UR-11] Trigonometric Uncertainty } – For functions like, uncertainty must be found by calculating the difference between the mean result and the result using the value plus its uncertainty: $ \theta \pm \delta \theta = tan^{-1}\ \{ \frac {A \pm \delta A}{B \pm \delta B}\ \} = tan^{-1} \{  \left( \frac{A}{B} \right) \left[ 1 \pm \left( \frac{\delta A}{A} + \frac{\delta B}{B} \right) \right]  \} $
+\item \textbf{ [UR-12] Small Angle Approximation } – If an angle $\theta$ is near zero, the uncertainty in the ratio can be treated as the uncertainty of the angle measurement in radians: $ \theta \pm \delta \theta \approx sin( \theta \pm \delta \theta) = \frac { A \pm \delta A } { B \pm \delta B } $
+\item \textbf{ [UR-13] Statistical Standard Deviation } – Report contains the standard deviation of individual measurements: $ \sigma_x = \sqrt{\frac{1}{N-1} \sum_{i=1}^{N} (x_i - \bar{x})^2} $ 
+\item \textbf{ [UR-14] Statistical Mean Uncertainty } – For repeated measurements, reports contain the uncertainty of the mean, calculated as the standard deviation of the mean: $ \sigma_{ \bar{x} } = \frac{\sigma_x}{\sqrt{N}} $
+\end{itemize}
+
+\subsection*{Scientific Reporting Rubric (9 Rules)}
+\begin{itemize}
+\item \textbf{ [SR-01] Methodological Precision } – Limitations in tools and methods must be accounted for when reporting scientific information.
+\item \textbf{ [SR-02] Error Acknowledgment } – The report states that no measurement is perfect and that experimental error is inherent to the process.
+\item \textbf{ [SR-03] Include Uncertainty ( ± $ \delta x $) } – Measurements from the lab must be reported with a plus or minus attached to them to account for the range of possible values in the specific mathematical format: \textit{Measurement} ± $ \delta x $.
+\item \textbf{ [SR-04] Apply Significant Figures } - Care must be taken to report measurements with the proper number of significant figures to avoid reporting "information that we don't know".
+\item \textbf{ [SR-05] Least Precise Input Rule } – In calculations, the final answer must be limited to the number of significant figures of the least precise measurement used (e.g., if one value has only 2 significant figures and all the other measurements have more than 2, the result must have 2).
+\item \textbf{ [SR-06] Calculator Precision } - The resulting values must be rounded to the correct number of significant figures rather than reporting the full calculator output (e.g., 0.8313995 becomes 0.814). 
+\item \textbf{ [SR-07] Deterministic Rounding } – When rounding to the correct number of significant figures, the final digit must be adjusted according to the standard rounding rules to reflect the most accurate and correct significant figures.
+\item \textbf{ [SR-08] Unit Inclusion } – All reported measurements and results must include their corresponding scientific units (e.g. s, m, miles).
+\item \textbf{ [SR-09] Honest Reporting } – To be considered "scientifically honest", results must not be reported as exact integers if there is any possibility of a range; for example, a "guess" of 19 must include its likely variance (e.g., 19 ± 1 secs).
+\end{itemize}
+
+\subsection*{Data and Graphs Rubric (13 Rules)}
+\begin{itemize}
+\item \textbf{ [DG-01] Prioritize Visual Plots } – Data must be presented as a plot or a graph rather than just a table to ensure rapid and clear communication of the science.
+\item \textbf{ [DG-02] Proper Axis Assignment } – The horizontal axis must represent the independent variable (e.g., time), while the vertical axis represents the dependent variable (e.g., height).
+\item \textbf{ [DG-03] Axis Labeling } – Plots and graphs must include clearly labeled axes that define the variables being measured (e.g., Time in days vs. Height in mm).
+\item \textbf{ [DG-04] Explicit Unit Labeling } – All axes must be labeled with their corresponding units of measurement (e.g., $days, mm, W, A$).
+\item \textbf{ [DG-05] Preliminary Relation Identification } – A visual assessment must be made to determine if the data shows a linear relation ($y=mx$) or a non-linear one.
+\item \textbf{ [DG-06] Slope Interpretation } – The slope of a linear fit must be interpreted in the context of the physical measurements, such as growth rate in mm/day
+\item \textbf{ [DG-07] Trend-line Accuracy } – Using software, a "fit" line must be generated that attempts to go as close to every individual data point as possible.
+\item \textbf{ [DG-08] Display the Fit Equation } – The specific mathematical equation reported by the fitting software (e.g., $y=7.1974x$) must be displayed on the plot.
+\item \textbf{ [DG-09] Contextual Slope Interpretation } – The slope must be extracted from the equation and interpreted within the context of the physical measurement (e.g., a growth rate of ~7 mm/day) .
+\item \textbf{ [DG-10] Visual Fit Validation } – A visual inspection must be conducted to confirm if the chosen fit (e.g., linear) is a "good choice" for the raw data provided.
+\item \textbf{ [DG-11] Quadratic Modeling } – For non-linear, concave-down data, a quadratic fit ( e.g.,$y=mx^2$) must be applied to identify higher-order coefficients.
+\item \textbf{ [DG-12] Linearization Strategy } – For complex or "exotic" functions, a variable substitution (e.g., $z=x^2$ or $z=cos(x)$) must be used to create a linear relationship to solve for m.
+\item \textbf{ [DG-13] Extrapolate Coefficients } – Use the slope of a linearized plot to extrapolate specific physical coefficients, such as the 2nd order coefficient in power calculations.
+\end{itemize}
+
+\section*{\stopsign Rules for the AI:}
+\begin{itemize}
+\item \textbf{ Verify Exact Rule Registry Manifest } - (Totaling (3 + 13) + (5 + 6 + 3 + 6 + 7 + 6 + 7 + 4) + (14 + 9 + 13) = 96 Rules Across 13 Rubrics)
+\item \textbf{ Never Group Categories } –  If the Rubric lists ``Proper Axis Assignment'' and ``Axis Labeling'' separately, they must remain separate in the audit.
+\item \textbf{ Match Exact Names }  – Use the  Rule Name exactly as it appears in the PDF.
+\item \textbf{ Point-Mirroring } – Assign exactly 1 point for each Rule and every Rubric, with the exception of the Format Compliance Rubric, which is assigned as either Pass or Fail.
+\item \textbf{ Enforce Input Anonymity } – If the report contains any PII, alert the user and refuse to assess the input. 
+\end{itemize}
+
+\end{document}
+

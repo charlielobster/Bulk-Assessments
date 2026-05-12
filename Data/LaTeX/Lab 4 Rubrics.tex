@@ -1,0 +1,184 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage{geometry}
+\usepackage{enumitem}
+\usepackage{amsmath}
+\usepackage{tikz}
+\usetikzlibrary{shapes.geometric}
+
+\newcommand{ \stopsign } {
+\begin{tikzpicture}[baseline=(stop.base)]
+    \node[draw=white, double=red, double distance=2pt, fill=red, 
+          regular polygon, regular polygon sides=8, inner sep=2pt] (stop) 
+          {\textcolor{white}{\textbf{\textsf{!}}}};
+\end{tikzpicture}
+}
+
+\begin{document}
+\pagestyle{empty}
+
+\title{Lab 4 (Centripetal Motion) Rubrics}
+% \maketitle
+
+\section*{Core Lab Rubrics (2 Rubrics)}
+% 3 + 13 = 16 Rules Across 2 Rubrics
+
+\subsection*{Format Compliance Rubric (3 Rules)}
+\begin{itemize}
+\item \textbf{ [FC-01] Formatting Mechanics } – Writing, spelling, and grammar must be at university levels. Report is organized and has appropriate header structure. Must be typed.
+\item \textbf{ [FC-02] No Handwritten Documents } - Including embedded images of handwritten documents.
+\item \textbf{ [FC-03] Forbidden Phrase } – Reports are forbidden from using the phrase "\textbf{human error}". 
+\end{itemize}
+
+\subsection*{Lab Report Rubric (13 Rules)}
+\begin{itemize}
+\item \textbf{ [LR-01] Introduction: Provide a Description } –  Describe the main experimental idea in your own words.
+\item \textbf{ [LR-02] Introduction:  Explain How Topics Relate } – Tie the lab to the everyday world or a particular scientific application.
+\item \textbf{ [LR-03] Procedure: Include Accurate Description } – Explain each of the experimental steps performed.
+\item \textbf{ [LR-04] Data: Tables, Graphs, and Plots Included }
+\item \textbf{ [LR-05] Data:  Graphs, and Plots Have Axes }
+\item \textbf{ [LR-06] Data: Graphs, and Plots Have Correct Units }
+\item \textbf{ [LR-07] Data: Tables, Graphs, and Plots Have Titles } – e.g., Title: Distance (m) vs. Time (sec).
+\item \textbf{ [LR-08] Questions:  Answer all Questions } 
+\item \textbf{ [LR-09] Questions:  Provide Clear Responses } – Provide specific justifications for each answer.
+\item \textbf{ [LR-10] Conclusion:  Summarize Results }
+\item \textbf{ [LR-11] Conclusion:  Include Specific Sources of Error }
+\item \textbf{ [LR-12] Conclusion:  Suggest Improvements }
+\item \textbf{ [LR-13] Graph Formal Mathematical Notation Included } –  The report includes some mathematical expression using LaTeX, special characters, or use of an equation editor. 
+\end{itemize}
+
+\section*{Lab 4 (Centripetal Motion) Rubrics (10 Rubrics)}
+% 4 + 3 + 4 + 3 + 3 + 3 + 3 + 3 + 1 + 3 = 30 Rules Across 10 Rubrics
+
+\subsection*{Experimental Proposal Rubric (4 Rules)}
+\begin{itemize}
+\item \textbf{ [EP-01] Force Identification } - Correctly identifies the spring tension as the source of $ F_c $.
+\item \textbf{ [EP-02] Measurement of $ F_c $ } - Proposes a clear method to measure the static force (using the mass/pan) required to stretch the spring to the target radius.
+\item \textbf{ [EP-03] Measurement of $ v $ } - Defines a protocol to calculate velocity, typically using $ v = \frac { 2 \pi r }{ T } $ (where $ T $ is the period of rotation).
+\item \textbf{ [EP-04] Radius Definition } - Correctly identifies the center of the circle (the vertical axis) for measuring $ r $.
+\end{itemize}
+
+\subsection*{Experimental Proposal Proficiency Rubric (3 Rules)}
+\begin{itemize}
+\item \textbf{ [EQ-01] Proficient } - Clearly defines the objective to verify $ F_c = \frac { m v^2 } { r } $. Identifies all four variables ($ m, v, r, F_c $) and the role of the spring in providing centripetal force.
+\item \textbf{ [EQ-02] Developing } - Objective is stated, but missing one or more variable definitions or specific equipment functions.
+\item \textbf{ [EQ-03] Incomplete } - Proposal is vague (e.g., "we're going to measure force") or missing entirely.
+\end{itemize}
+
+\subsection*{Data Collection Rubric (4 Rules)}
+\begin{itemize}
+\item \textbf{ [DC-01] Radius Accuracy } - Records the measured distance from the center of the shaft to the bob using the viewing background for alignment.
+\item \textbf{ [DC-02] Mass Measurements } - Includes the mass of the rotating bob and the mass added to the pan for static calibration.
+\item \textbf{ [DC-03] Trial Consistency } - Includes multiple timing trials (e.g., time for 10 or 20 rotations) to minimize human error and calculate an average period. 
+\item \textbf{ [DC-04] Equipment Setup } - Confirms the apparatus was leveled using the leveling screws before data collection.
+\end{itemize}
+
+\subsection*{Force Measurement ($F_c$) Proficiency Rubric (3 Rules)}
+\begin{itemize}
+\item \textbf{ [FN-01] Proficient } - Describes using the mass/pan and pulley system to determine the static force required to stretch the spring to a specific radius.
+\item \textbf{ [FN-02] Developing } - Mentions measuring force but lacks detail on how the hanging mass relates to the spring tension at the target radius.
+\item \textbf{ [FN-03] Incomplete } - No description of how the force ($F_c$) is quantified.
+\end{itemize}
+
+\subsection*{Kinematics: Measurement ($ r $) Proficiency Rubric (3 Rules)}
+\begin{itemize}
+\item \textbf{ [KN-01] Proficient } - Correctly identifies the center of the rotating structure (vertical axis) and describes measuring the horizontal distance to the bob's center.
+\item \textbf{ [KN-02] Developing } - Measures distance but fails to identify the correct center of rotation or the bob's equilibrium point.
+\item \textbf{ [KN-03] Incomplete } - Radius measurement methodology is missing.
+\end{itemize}
+
+\subsection*{Kinematics: Calculation ($ v $) Proficiency Rubric (3 Rules)}
+\begin{itemize}
+\item \textbf{ [KD-01] Proficient } - Explains how to calculate $ v $ using the period ($ T $) and radius ($ r $) via $ v = \frac {2 \pi r}{ T } $. Includes a method for timing multiple rotations to reduce error (p. 2).
+\item \textbf{ [KD-02] Developing } - Measures time for rotation but does not clearly link it to the linear velocity formula.
+\item \textbf{ [KD-03] Incomplete } - Velocity is not calculated or the method is fundamentally flawed.
+\end{itemize}
+
+\subsection*{Verification \& Analysis Rubric (3 Rules)}
+\begin{itemize}
+\item \textbf{ [VA-01] Formula Application } - Correctly applies the centripetal force formula: $ F = \frac { m v^2 } { r } $
+\item \textbf{ [VA-02] Comparative Analysis } - Compares the calculated centripetal force ($ \frac { mv^2 }{ r } $) against the measured static force ($ m g $ from the mass/pan).
+\item \textbf{ [VA-03] Quantitative Error } - Calculates the percent difference/error between the experimental and theoretical force values.
+\end{itemize}
+
+\subsection*{Verification \& Analysis Proficiency Rubric (3 Rules)}
+\begin{itemize}
+\item \textbf{ [VB-01] Proficient } - Includes an organized data table. Provides a direct comparison between the measured static force and the calculated centripetal force ($ \frac { mv^2 }{ r } $).
+\item \textbf{ [VB-02] Developing } - Data is present but missing units, multiple trials, or the final quantitative comparison.
+\item \textbf{ [VB-03] Incomplete } - No calculation of $ \frac { mv^2 }{ r } $ or comparison to measured $ F_c $.
+\end{itemize}
+
+\subsection*{Conclusion Rubric (1 Rule)}
+\begin{itemize}
+\item \textbf{ [CO-01] Address Relationship } - Provides a clear statement on whether the data verifies or falsifies the relationship $ F_c = \frac { m v^2 } { r } $ based on the results.
+\end{itemize}
+
+\subsection*{Conclusion Proficiency Rubric (3 Rules)}
+\begin{itemize}
+\item \textbf{ [CP-01] Proficient } - Accurately states if the experimental data verified or falsified the relation $ F_c = \frac { m v^2 } { r } $ based on the results.
+\item \textbf{ [CP-02] Developing } - Conclusion is present but lacks a quantitative basis or justification.
+\item \textbf{ [CP-03] Incomplete } - No conclusion or summary of findings.
+\end{itemize}
+
+\section*{Bonus Rubrics (3 Rubrics)}
+% 14 + 9 + 13 = 36 Rules Across 3 Rubrics
+
+\subsection*{Uncertainty Rubric (14 Rules)}
+\begin{itemize}
+\item \textbf{ [UR-01] Completeness } – Every measurement result must be accompanied by a quantitative statement of its uncertainty to be considered complete.
+\item \textbf{ [UR-02] Purpose Validation } – Uncertainty must be used as the primary metric to decide if a result is adequate for its intended purpose.
+\item \textbf{ [UR-03] Consistency Verification } – Calculated values must be compared against text values to determine if the difference is consistent with the measurement uncertainty.
+\item \textbf{ [UR-04] Percentage Uncertainty } – The ratio between a measurement's uncertainty and its value is calculated using the formula: $( \frac{\delta x}{|x|} ) \times 100\%$
+\item \textbf{ [UR-05] Additive Propagation } – When adding two measurements, the final uncertainty must be the sum of their absolute uncertainties: $ (A \pm \delta A) + (B \pm \delta B) = (A + B) \pm (\delta A + \delta B) $
+\item \textbf{ [UR-06] Subtractive Propagation } – Similar to addition, when subtracting two measurements, the final uncertainty must be the difference of their absolute uncertainties: $ (A \pm \delta A) - (B \pm \delta B) = (A - B) \pm (\delta A + \delta B) $
+\item \textbf{ [UR-07] Multiplicative Propagation } – For multiplication, the uncertainty must be calculated using the fractional sum: $ (A \pm \delta A) \times (B \pm \delta B) = (AB) \left[ 1 \pm \left( \frac{\delta A}{A} + \frac{\delta B}{B} \right) \right] $
+\item \textbf{ [UR-08] Divisive Propagation } – Similar to multiplication,  the quotient must be calculated using the fractional sum: $ \frac{(A \pm \delta A)}{(B \pm \delta B)} = \left( \frac{A}{B} \right) \left[ 1 \pm \left( \frac{\delta A}{A} + \frac{\delta B}{B} \right) \right] $
+\item \textbf{ [UR-09] Constant Scaling } – When multiplying by a constant, the absolute uncertainty must also be multiplied by that constant: $ k \times (A \pm \delta A) = [kA \pm k\delta A] $
+\item \textbf{ [UR-10] Square Root Calculation } – The uncertainty of a square root must be determined using the formula: $ \sqrt{(A \pm \delta A)} = \left( \sqrt{A} \pm \frac{\delta A}{2\sqrt{A}} \right) $
+\item \textbf{ [UR-11] Trigonometric Uncertainty } – For functions like, uncertainty must be found by calculating the difference between the mean result and the result using the value plus its uncertainty: $ \theta \pm \delta \theta = tan^{-1}\ \{ \frac {A \pm \delta A}{B \pm \delta B}\ \} = tan^{-1} \{  \left( \frac{A}{B} \right) \left[ 1 \pm \left( \frac{\delta A}{A} + \frac{\delta B}{B} \right) \right]  \} $
+\item \textbf{ [UR-12] Small Angle Approximation } – If an angle $\theta$ is near zero, the uncertainty in the ratio can be treated as the uncertainty of the angle measurement in radians: $ \theta \pm \delta \theta \approx sin( \theta \pm \delta \theta) = \frac { A \pm \delta A } { B \pm \delta B } $
+\item \textbf{ [UR-13] Statistical Standard Deviation } – Report contains the standard deviation of individual measurements: $ \sigma_x = \sqrt{\frac{1}{N-1} \sum_{i=1}^{N} (x_i - \bar{x})^2} $ 
+\item \textbf{ [UR-14] Statistical Mean Uncertainty } – For repeated measurements, reports contain the uncertainty of the mean, calculated as the standard deviation of the mean: $ \sigma_{ \bar{x} } = \frac{\sigma_x}{\sqrt{N}} $
+\end{itemize}
+
+\subsection*{Scientific Reporting Rubric (9 Rules)}
+\begin{itemize}
+\item \textbf{ [SR-01] Methodological Precision } – Limitations in tools and methods must be accounted for when reporting scientific information.
+\item \textbf{ [SR-02] Error Acknowledgment } – The report states that no measurement is perfect and that experimental error is inherent to the process.
+\item \textbf{ [SR-03] Include Uncertainty ( ± $ \delta x $) } – Measurements from the lab must be reported with a plus or minus attached to them to account for the range of possible values in the specific mathematical format: \textit{Measurement} ± $ \delta x $.
+\item \textbf{ [SR-04] Apply Significant Figures } - Care must be taken to report measurements with the proper number of significant figures to avoid reporting "information that we don't know".
+\item \textbf{ [SR-05] Least Precise Input Rule } – In calculations, the final answer must be limited to the number of significant figures of the least precise measurement used (e.g., if one value has only 2 significant figures and all the other measurements have more than 2, the result must have 2).
+\item \textbf{ [SR-06] Calculator Precision } - The resulting values must be rounded to the correct number of significant figures rather than reporting the full calculator output (e.g., 0.8313995 becomes 0.814). 
+\item \textbf{ [SR-07] Deterministic Rounding } – When rounding to the correct number of significant figures, the final digit must be adjusted according to the standard rounding rules to reflect the most accurate and correct significant figures.
+\item \textbf{ [SR-08] Unit Inclusion } – All reported measurements and results must include their corresponding scientific units (e.g. s, m, miles).
+\item \textbf{ [SR-09] Honest Reporting } – To be considered "scientifically honest", results must not be reported as exact integers if there is any possibility of a range; for example, a "guess" of 19 must include its likely variance (e.g., 19 ± 1 secs).
+\end{itemize}
+
+\subsection*{Data and Graphs Rubric (13 Rules)}
+\begin{itemize}
+\item \textbf{ [DG-01] Prioritize Visual Plots } – Data must be presented as a plot or a graph rather than just a table to ensure rapid and clear communication of the science.
+\item \textbf{ [DG-02] Proper Axis Assignment } – The horizontal axis must represent the independent variable (e.g., time), while the vertical axis represents the dependent variable (e.g., height).
+\item \textbf{ [DG-03] Axis Labeling } – Plots and graphs must include clearly labeled axes that define the variables being measured (e.g., Time in days vs. Height in mm).
+\item \textbf{ [DG-04] Explicit Unit Labeling } – All axes must be labeled with their corresponding units of measurement (e.g., $days, mm, W, A$).
+\item \textbf{ [DG-05] Preliminary Relation Identification } – A visual assessment must be made to determine if the data shows a linear relation ($y=mx$) or a non-linear one.
+\item \textbf{ [DG-06] Slope Interpretation } – The slope of a linear fit must be interpreted in the context of the physical measurements, such as growth rate in mm/day
+\item \textbf{ [DG-07] Trend-line Accuracy } – Using software, a "fit" line must be generated that attempts to go as close to every individual data point as possible.
+\item \textbf{ [DG-08] Display the Fit Equation } – The specific mathematical equation reported by the fitting software (e.g., $y=7.1974x$) must be displayed on the plot.
+\item \textbf{ [DG-09] Contextual Slope Interpretation } – The slope must be extracted from the equation and interpreted within the context of the physical measurement (e.g., a growth rate of ~7 mm/day) .
+\item \textbf{ [DG-10] Visual Fit Validation } – A visual inspection must be conducted to confirm if the chosen fit (e.g., linear) is a "good choice" for the raw data provided.
+\item \textbf{ [DG-11] Quadratic Modeling } – For non-linear, concave-down data, a quadratic fit ( e.g.,$y=mx^2$) must be applied to identify higher-order coefficients.
+\item \textbf{ [DG-12] Linearization Strategy } – For complex or "exotic" functions, a variable substitution (e.g., $z=x^2$ or $z=cos(x)$) must be used to create a linear relationship to solve for m.
+\item \textbf{ [DG-13] Extrapolate Coefficients } – Use the slope of a linearized plot to extrapolate specific physical coefficients, such as the 2nd order coefficient in power calculations.
+\end{itemize}
+
+\section*{\stopsign Rules for the AI:}
+\begin{itemize}
+\item \textbf{ Verify Exact Rule Registry Manifest } - (Totaling (3 + 13) + (4 + 3 + 4 + 3 + 3 + 3 + 3 + 3 + 1 + 3) + (14 + 9 + 13) = 82 Rules Across 15 Rubrics)
+\item \textbf{ Never Group Categories } –  If the Rubric lists ``Proper Axis Assignment'' and ``Axis Labeling'' separately, they must remain separate in the audit.
+\item \textbf{ Match Exact Names }  – Use the  Rule Name exactly as it appears in the PDF.
+\item \textbf{ Point-Mirroring } – Assign exactly 1 point for each Rule and every Rubric, with the exception of the Format Compliance Rubric, which is assigned as either Pass or Fail.
+\item \textbf{ Enforce Input Anonymity } – If the report contains any PII, alert the user and refuse to assess the input. 
+\end{itemize}
+
+\end{document}
+
